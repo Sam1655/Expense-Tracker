@@ -1,5 +1,5 @@
 import React from "react";
-import "./Textinput.css";
+import "./TextInput.css";
 
 const TextInput = ({
   register,
