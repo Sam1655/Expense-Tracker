@@ -7,7 +7,7 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/NetWorthTracker" element={<NetWorthTracker />} />
+        <Route path="/" element={<NetWorthTracker />} />
       </Routes>
     </>
   );
