@@ -1,0 +1,52 @@
+.rupee-input-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+}
+
+.rupee-symbol {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    color: #ffffff;
+}
+
+.rupee-input {
+    width: 100%;
+    padding: 0.4rem 0.4rem 0.4rem 1.8rem;
+    border: 2px solid #ccc;
+    background-color: #242424;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.rupee-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.rupee-input:disabled {
+    cursor: not-allowed;
+    background-color: #6c757d;
+    border: none;
+    color: white;
+}
+
+.rupee-input::placeholder {
+    color: #aaa;
+    font-style: italic;
+}
+
+.date-Span{
+    font-size: 0.5rem;
+    opacity: 70%;
+    margin-left: 4px;
+    margin-bottom: 4px;
+    display: flex;
+    align-self: end;
+}
