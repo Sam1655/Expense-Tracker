@@ -1,14 +1,17 @@
 import { useEffect, useState } from "react";
 import TabNavigator from "./Components/TabNavigator";
 import Income from "./Components/Income";
-import { useForm } from "react-hook-form";
 import Assets from "./Components/Assets";
 import Liabilities from "./Components/Liabilities";
 import Expenses from "./Components/Expenses";
+import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
-import "./NetWorthTracker.css";
 import { TABS } from "./constants";
+import { ToastContainer, toast } from "react-toastify";
+
+import "react-toastify/dist/ReactToastify.css";
+import "./NetWorthTracker.css";
 
 const NetWorthTracker = () => {
   const [activeTab, setActiveTab] = useState(3);
@@ -52,24 +55,25 @@ const NetWorthTracker = () => {
       expensesFields,
       netWorth,
     };
-    console.log(data);
-    if (!data.netWorth) {
-      alert("Please Fill the Data");
+
+    if (!data.netWorth && !expensesFields.length) {
+      toast.error("Error Saving Empty Data!");
       return;
     }
 
-    if (
-      JSON.parse(localStorage.getItem("expenseData"))?.[data.date] &&
-      !window.confirm(`Do you want to Modify the Data for ${data.date}`)
-    ) {
-      alert("Data Not Saved");
-      return;
-    }
+    // if (
+    //   JSON.parse(localStorage.getItem("expenseData"))?.[data.date] &&
+    //   !window.confirm(`Do you want to Modify the Data for ${data.date}`)
+    // ) {
+    //   toast.error("Data Not Saved");
+    //   return;
+    // }
+
     let expenseData = JSON.parse(localStorage.getItem("expenseData")) || {};
     expenseData[data.date] = data;
 
     localStorage.setItem("expenseData", JSON.stringify(expenseData));
-    alert("Data Saved");
+    toast.success(`Data Saved Successfully for ${data?.date}`);
   };
 
   const handleDateChange = (e) => {
@@ -206,6 +210,7 @@ const NetWorthTracker = () => {
           </div>
         </div>
       </form>
+      <ToastContainer position="bottom-right" theme="dark" />
     </div>
   );
 };
