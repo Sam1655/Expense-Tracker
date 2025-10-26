@@ -47,7 +47,6 @@ const NetWorthTracker = () => {
     setValue,
     handleSubmit,
     reset,
-    resetField,
     formState: { errors },
   } = useForm();
 
