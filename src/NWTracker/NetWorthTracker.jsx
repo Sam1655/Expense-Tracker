@@ -146,7 +146,7 @@ const NetWorthTracker = () => {
         <div className="d-flex flex-column justify-content-start align-items-center mt-4 mx-2">
           <div className="d-flex flex-column flex-md-row align-items-center justify-content-evenly w-100 px-2 gap-2">
             <div className="d-flex align-items-center justify-content-center gap-3">
-              <img src="public/expense.png" alt="Logo" width={"40"} />
+              <img src="/expense.png" alt="Logo" width={"40"} />
               <h3 className="bg-dark text-light rounded p-1 text-center mb-2 mb-md-0">
                 Net Worth & Expense Tracker
               </h3>
