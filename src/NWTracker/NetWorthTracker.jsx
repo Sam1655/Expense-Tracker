@@ -6,7 +6,7 @@ import Liabilities from "./Components/Liabilities";
 import Expenses from "./Components/Expenses";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { TABS } from "./constants";
 import { ToastContainer, toast } from "react-toastify";
 
@@ -47,6 +47,7 @@ const NetWorthTracker = () => {
     setValue,
     handleSubmit,
     reset,
+    resetField,
     formState: { errors },
   } = useForm();
 
@@ -56,7 +57,9 @@ const NetWorthTracker = () => {
 
   const prevMonthdata = consolidatedData?.[prevMonth];
 
-  console.log(prevMonthdata, "prevMonthData");
+  const projectedExpense = prevMonthdata
+    ? totalIncome + prevMonthdata.netWorth - netWorth
+    : "—";
 
   const onSubmit = (data) => {
     data = {
@@ -84,8 +87,9 @@ const NetWorthTracker = () => {
     const date = e.target.value;
 
     const data = consolidatedData?.[date];
-
     if (data) {
+      reset();
+
       const keys = Object.keys(data);
       const values = Object.values(data);
 
@@ -178,6 +182,17 @@ const NetWorthTracker = () => {
               >
                 <FontAwesomeIcon icon={faCheck} />
               </button>
+              <button
+                type="button"
+                className="btn btn-light rounded-circle"
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    JSON.stringify(consolidatedData)
+                  )
+                }
+              >
+                <FontAwesomeIcon icon={faCopy} />
+              </button>
             </div>
           </div>
           <div className="p-0 row w-100">
@@ -212,17 +227,23 @@ const NetWorthTracker = () => {
 
                 {/* Assets and Liabilities */}
                 <div className="row text-center mb-4">
-                  <div className="col-6">
+                  <div className="col-4">
                     <h6 className="fw-semibold text-uppercase text-secondary">
                       Assets
                     </h6>
                     <h4 className="fw-bold">₹ {totalAssets}</h4>
                   </div>
-                  <div className="col-6">
+                  <div className="col-4">
                     <h6 className="fw-semibold text-uppercase text-secondary">
                       Liabilities
                     </h6>
                     <h4 className="fw-bold">₹ {totalLiabilities}</h4>
+                  </div>
+                  <div className="col-4">
+                    <h6 className="fw-semibold text-uppercase text-secondary">
+                      Income
+                    </h6>
+                    <h4 className="fw-bold">₹ {totalIncome}</h4>
                   </div>
                 </div>
 
@@ -241,7 +262,7 @@ const NetWorthTracker = () => {
                     <h6 className="fw-semibold text-uppercase text-secondary">
                       Projected Expenses
                     </h6>
-                    <h4 className="fw-bold">₹ —</h4>
+                    <h4 className="fw-bold">₹ {projectedExpense}</h4>
                   </div>
                   <div className="col-6">
                     <h6 className="fw-semibold text-uppercase text-secondary">

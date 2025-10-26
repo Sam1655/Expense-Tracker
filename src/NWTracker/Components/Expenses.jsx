@@ -19,8 +19,6 @@ const Expenses = ({
   // Create refs for each TextInput field
   const inputRefs = useRef([]);
 
-  console.log(expensesFields, "expensesFields");
-
   const handleInputChange = (e, index) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
 
