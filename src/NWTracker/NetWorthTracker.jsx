@@ -23,13 +23,16 @@ const NetWorthTracker = () => {
   const [expensesFields, setExpensesFields] = useState([]);
 
   const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
+  const [consolidatedData, setConsolidatedData] = useState(
+    JSON.parse(localStorage.getItem("consolidatedData"))
+  );
 
   useEffect(() => {
     setNetWorth(totalAssets - totalLiabilities);
   }, [totalAssets, totalExpenses, totalIncome, totalLiabilities]);
 
+  const currentMonth = new Date().toISOString().split("T")[0].slice(0, 7);
   useEffect(() => {
-    const currentMonth = new Date().toISOString().split("T")[0].slice(0, 7);
     setValue("date", currentMonth);
     handleDateChange({
       target: { value: currentMonth.toString() },
@@ -44,6 +47,14 @@ const NetWorthTracker = () => {
     reset,
     formState: { errors },
   } = useForm();
+
+  const selectedMonth = getValues("date") || currentMonth;
+  const [year, month] = selectedMonth.split("-").map(Number);
+  const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);
+
+  const prevMonthdata = consolidatedData?.[prevMonth];
+
+  console.log(prevMonthdata, "prevMonthData");
 
   const onSubmit = (data) => {
     data = {
@@ -60,9 +71,8 @@ const NetWorthTracker = () => {
       return;
     }
 
-    let consolidatedData =
-      JSON.parse(localStorage.getItem("consolidatedData")) || {};
     consolidatedData[data.date] = data;
+    // setConsolidatedData([...consolidatedData]);
 
     localStorage.setItem("consolidatedData", JSON.stringify(consolidatedData));
     toast.success(`Data Saved Successfully for ${data?.date}`);
@@ -71,7 +81,7 @@ const NetWorthTracker = () => {
   const handleDateChange = (e) => {
     const date = e.target.value;
 
-    const data = JSON.parse(localStorage.getItem("consolidatedData"))?.[date];
+    const data = consolidatedData?.[date];
 
     if (data) {
       const keys = Object.keys(data);
@@ -179,26 +189,92 @@ const NetWorthTracker = () => {
               </TabNavigator>
             </div>
             <div className="col-lg-6 col-md-4 mt-4 ">
-              <div className="">
-                <div className="row mt-4 justify-content-center align-items-center">
-                  <span className="col-4">Total Assets : </span>
-                  <span className="col-6">Rs. {totalAssets}</span>
+              <div
+                className="container px-4 py-4 rounded-3 shadow-sm text-light"
+                style={{
+                  maxWidth: "500px",
+                  margin: "auto",
+                  fontFamily: "system-ui, sans-serif",
+                  backgroundColor: "#1e1e1e",
+                }}
+              >
+                <div className="mb-3 text-center">
+                  <p className="m-0 fs-5 fw-medium">My Networth</p>
                 </div>
-                <div className="row mt-4 justify-content-center align-items-center">
-                  <span className="col-4">Total Liabilities : </span>
-                  <span className="col-6">Rs. {totalLiabilities}</span>
+
+                {/* Main Net Worth */}
+                <div className="mb-4 text-center">
+                  <h1 className="display-5 fw-bold mb-1">₹ {netWorth}</h1>
+                  <p className="text-secondary">Assets − Liabilities</p>
                 </div>
-                <div className="row mt-4 justify-content-center align-items-center">
-                  <span className="col-4">Total Income : </span>
-                  <span className="col-6">Rs. {totalIncome}</span>
+
+                {/* Assets and Liabilities */}
+                <div className="row text-center mb-4">
+                  <div className="col-6">
+                    <h6 className="fw-semibold text-uppercase text-secondary">
+                      Assets
+                    </h6>
+                    <h4 className="fw-bold">₹ {totalAssets}</h4>
+                  </div>
+                  <div className="col-6">
+                    <h6 className="fw-semibold text-uppercase text-secondary">
+                      Liabilities
+                    </h6>
+                    <h4 className="fw-bold">₹ {totalLiabilities}</h4>
+                  </div>
                 </div>
-                <div className="row mt-4 justify-content-center align-items-center">
-                  <span className="col-4">Total Expenses : </span>
-                  <span className="col-6">Rs. {totalExpenses}</span>
+
+                {/* Divider */}
+                <hr
+                  style={{
+                    border: "none",
+                    height: "1px",
+                    backgroundColor: "#555",
+                  }}
+                />
+
+                {/* Expenses */}
+                <div className="row text-center my-4">
+                  <div className="col-6">
+                    <h6 className="fw-semibold text-uppercase text-secondary">
+                      Projected Expenses
+                    </h6>
+                    <h4 className="fw-bold">₹ —</h4>
+                  </div>
+                  <div className="col-6">
+                    <h6 className="fw-semibold text-uppercase text-secondary">
+                      Actual Expenses
+                    </h6>
+                    <h4 className="fw-bold">₹ {totalExpenses}</h4>
+                  </div>
                 </div>
-                <div className="row mt-4 justify-content-center align-items-center">
-                  <span className="col-4">Net Worth : </span>
-                  <span className="col-6">Rs. {netWorth}</span>
+
+                {/* Divider */}
+                <hr
+                  style={{
+                    border: "none",
+                    height: "1px",
+                    backgroundColor: "#555",
+                  }}
+                />
+
+                {/* 1 Month Change */}
+                <div className="row text-center my-4">
+                  <div className="col-6">
+                    <h6 className="fw-semibold text-uppercase text-secondary">
+                      1 Month Change
+                    </h6>
+
+                    <h4
+                      className={`fw-bold ${
+                        netWorth - prevMonthdata?.netWorth >= 0
+                          ? "text-success"
+                          : "text-danger"
+                      }`}
+                    >
+                      {prevMonthdata ? netWorth - prevMonthdata?.netWorth : "—"}
+                    </h4>
+                  </div>
                 </div>
               </div>
             </div>
