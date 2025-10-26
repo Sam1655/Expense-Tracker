@@ -24,8 +24,10 @@ const NetWorthTracker = () => {
 
   const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
   const [consolidatedData, setConsolidatedData] = useState(
-    JSON.parse(localStorage.getItem("consolidatedData"))
+    JSON.parse(localStorage.getItem("consolidatedData")) || {}
   );
+
+  console.log(consolidatedData);
 
   useEffect(() => {
     setNetWorth(totalAssets - totalLiabilities);

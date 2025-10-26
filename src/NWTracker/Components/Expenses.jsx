@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useLongPress } from "@custom-react-hooks/use-long-press";
 import { EXPENSE_TYPES } from "../constants";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const Expenses = ({
   totalExpenses,
@@ -16,6 +16,11 @@ const Expenses = ({
   setExpensesFields,
   toast,
 }) => {
+  // Create refs for each TextInput field
+  const inputRefs = useRef([]);
+
+  console.log(expensesFields, "expensesFields");
+
   const handleInputChange = (e, index) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
 
@@ -70,19 +75,22 @@ const Expenses = ({
 
   const handleExpenseAdd = () => {
     setExpensesFields((prev) => [
-      ...prev,
       {
         label: EXPENSE_TYPES[0],
         value: "",
         timestamp: new Date(),
       },
+      ...prev,
     ]);
   };
 
   return (
     <div className="mx-3">
       <div className="row align-items-center justify-content-center">
-        <div className="d-flex justify-content-around align-items-center mb-4">
+        <div
+          className="d-flex justify-content-around align-items-center mb-4 position-sticky top-0 pt-3 pb-2"
+          style={{ zIndex: "1", backgroundColor: "#1e1e1e" }}
+        >
           <div>
             <button
               type="button"
@@ -137,12 +145,22 @@ const Expenses = ({
               {expensesFields[index]?.label !== "Other" &&
               EXPENSE_TYPES.includes(expensesFields[index]?.label) ? (
                 <select
+                  value={expensesFields[index]?.label}
                   className="mx-2 col-md-4"
                   onChange={(e) => {
                     row.label = e.target.value;
                     setExpensesFields([...expensesFields]);
+
+                    // Automatically focus the corresponding TextInput
+                    setTimeout(() => {
+                      requestAnimationFrame(() => {
+                        const inputElement = inputRefs.current[index];
+                        if (inputElement) {
+                          inputElement.focus();
+                        }
+                      });
+                    }, 250);
                   }}
-                  defaultValue={expensesFields[index]?.label}
                 >
                   {EXPENSE_TYPES.map((name, index1) => (
                     <option key={index1} value={name}>
@@ -171,6 +189,7 @@ const Expenses = ({
               )}
               <label className="mx-2 col-md-1">:</label>
               <TextInput
+                ref={(el) => (inputRefs.current[index] = el)} // store ref
                 onChange={(e) => handleInputChange(e, index)}
                 onClick={(e) => {
                   if (e.target.value === "0") e.target.value = "";
