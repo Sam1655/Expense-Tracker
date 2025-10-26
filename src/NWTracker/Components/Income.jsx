@@ -44,7 +44,7 @@ const Income = ({
           </div>
         );
       })}
-      <div className="mt-2 row align-items-start text-start justify-content-start bg-secondary position-sticky bottom-0 rounded">
+      <div className="mt-2 row align-items-start text-start justify-content-start bg-success position-sticky bottom-0 rounded">
         <div className="my-2 d-flex align-items-center ">
           <p className="text-start mb-0" style={{ flex: "0 0 40%" }}>
             Total Income

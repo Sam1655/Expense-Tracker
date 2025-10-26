@@ -1,33 +1,38 @@
 import TextInput from "./TextInput";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPlus,
+  faCopy,
+  faFileImport,
+} from "@fortawesome/free-solid-svg-icons";
 import { useLongPress } from "@custom-react-hooks/use-long-press";
 import { EXPENSE_TYPES } from "../constants";
+import { useEffect } from "react";
 
 const Expenses = ({
   totalExpenses,
   setTotalExpenses,
   expensesFields,
   setExpensesFields,
+  toast,
 }) => {
-
-
   const handleInputChange = (e, index) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
 
     e.target.value = e.target.value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Add , separations
     expensesFields[index].value = e.target.value;
     setExpensesFields([...expensesFields]);
+  };
 
+  useEffect(() => {
     setTotalExpenses(
       expensesFields.reduce(
         (accumulator, currentValue) =>
           accumulator + +currentValue.value?.split(",")?.join(""),
         0
       )
-      // totalExpenses + +e.target.value?.split(",")?.join("")
     );
-  };
+  }, [expensesFields]);
 
   const handleDelete = (index) => {
     if (window.confirm("Do you want to Delete?")) {
@@ -36,9 +41,86 @@ const Expenses = ({
       setExpensesFields(expensesFields.filter((_, i) => i !== index));
     }
   };
+
+  const handleExpenseImport = () => {
+    navigator.clipboard
+      .readText()
+      .then((text) => {
+        if (JSON.parse(text)?.length) {
+          setExpensesFields(JSON.parse(text));
+          toast.success("Data Imported from Clipboard");
+        } else {
+          toast.error("Invalid Data Format in Clipboard");
+        }
+      })
+      .catch((err) => {
+        toast.error("Failed to read clipboard: ", err);
+      });
+  };
+
+  const handleExpenseCopy = () => {
+    try {
+      navigator.clipboard.writeText(JSON.stringify(expensesFields));
+    } catch (error) {
+      toast.error("Error Copying the Data");
+      return;
+    }
+    toast.success("Data Copied to Clipboard");
+  };
+
+  const handleExpenseAdd = () => {
+    setExpensesFields((prev) => [
+      ...prev,
+      {
+        label: EXPENSE_TYPES[0],
+        value: "",
+        timestamp: new Date(),
+      },
+    ]);
+  };
+
   return (
     <div className="mx-3">
       <div className="row align-items-center justify-content-center">
+        <div className="d-flex justify-content-around align-items-center mb-4">
+          <div>
+            <button
+              type="button"
+              className="btn btn-light rounded-circle"
+              onClick={handleExpenseImport}
+            >
+              <FontAwesomeIcon icon={faFileImport} />
+            </button>
+            <label style={{ fontSize: "0.7rem", marginLeft: "0.5rem" }}>
+              Import
+            </label>
+          </div>
+          <div>
+            <button
+              type="button"
+              className="btn btn-light rounded-circle"
+              onClick={handleExpenseCopy}
+            >
+              <FontAwesomeIcon icon={faCopy} />
+            </button>
+            <label style={{ fontSize: "0.7rem", marginLeft: "0.5rem" }}>
+              Copy
+            </label>
+          </div>
+
+          <div>
+            <button
+              type="button"
+              className="btn btn-light rounded-circle"
+              onClick={handleExpenseAdd}
+            >
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+            <label style={{ fontSize: "0.7rem", marginLeft: "0.5rem" }}>
+              Add
+            </label>
+          </div>
+        </div>
         {expensesFields?.map((row, index) => {
           // const longPressEvents = useLongPress(() => handleDelete(index), {
           //   threshold: 500,
@@ -112,7 +194,7 @@ const Expenses = ({
             </div>
           );
         })}
-        <div className="mt-2 row align-items-start text-start justify-content-start bg-secondary position-sticky bottom-0 rounded">
+        <div className="mt-2 row align-items-start text-start justify-content-start bg-danger position-sticky bottom-0 rounded">
           <div className="my-2 d-flex align-items-center ">
             <p className="text-start mb-0" style={{ flex: "0 0 40%" }}>
               Total Expenses
@@ -126,22 +208,6 @@ const Expenses = ({
               disabled
               placeholder="Total"
             />
-            <button
-              type="button"
-              className="btn btn-light rounded-circle"
-              onClick={() =>
-                setExpensesFields((prev) => [
-                  ...prev,
-                  {
-                    label: EXPENSE_TYPES[0],
-                    value: "",
-                    timestamp: new Date(),
-                  },
-                ])
-              }
-            >
-              <FontAwesomeIcon icon={faPlus} />
-            </button>
           </div>
         </div>
       </div>

@@ -6,7 +6,7 @@
 
 .rupee-symbol {
     position: absolute;
-    left: 0.8rem;
+    left: 0.9rem;
     top: 50%;
     transform: translateY(-50%);
     font-size: 1.2rem;
@@ -16,10 +16,10 @@
 .rupee-input {
     width: 100%;
     padding: 0.4rem 0.4rem 0.4rem 1.8rem;
-    border: 2px solid #ccc;
+    border: 1px solid #ccc;
     background-color: #242424;
     border-radius: 5px;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     box-sizing: border-box;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
@@ -32,7 +32,7 @@
 
 .rupee-input:disabled {
     cursor: not-allowed;
-    background-color: #6c757d;
+    background-color: transparent;
     border: none;
     color: white;
 }
@@ -43,10 +43,10 @@
 }
 
 .date-Span{
-    font-size: 0.5rem;
-    opacity: 70%;
-    margin-left: 4px;
-    margin-bottom: 4px;
+    font-size: 0.6rem;
+    opacity: 80%;
+    margin-left: 10px;
+    margin-bottom: 2px;
     display: flex;
     align-self: end;
 }

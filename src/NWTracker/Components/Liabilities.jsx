@@ -30,7 +30,7 @@ const Liabilities = ({
       {LIABILITIES_FIELD.map((row, index) => {
         return (
           <div className="my-1 d-flex align-items-center" key={index}>
-            <p className="text-start mb-0" style={{ flex: "0 0 40%" }}>
+            <p className="text-start mb-0" style={{ flex: "0 0 35%" }}>
               {row.label}
             </p>
             <p className="mx-3 mb-0">:</p>
@@ -44,9 +44,9 @@ const Liabilities = ({
           </div>
         );
       })}
-      <div className="mt-2 row align-items-start text-start justify-content-start bg-secondary position-sticky bottom-0 rounded">
+      <div className="mt-2 row align-items-start text-start justify-content-start bg-warning position-sticky bottom-0 rounded">
         <div className="my-2 d-flex align-items-center ">
-          <p className="text-start mb-0" style={{ flex: "0 0 40%" }}>
+          <p className="text-start mb-0" style={{ flex: "0 0 35%" }}>
             Total Liabilities
           </p>
           <p className="mx-3 mb-0">:</p>

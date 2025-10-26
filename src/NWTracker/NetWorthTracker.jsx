@@ -55,32 +55,23 @@ const NetWorthTracker = () => {
       expensesFields,
       netWorth,
     };
-
     if (!data.netWorth && !expensesFields.length) {
       toast.error("Error Saving Empty Data!");
       return;
     }
 
-    // if (
-    //   JSON.parse(localStorage.getItem("expenseData"))?.[data.date] &&
-    //   !window.confirm(`Do you want to Modify the Data for ${data.date}`)
-    // ) {
-    //   toast.error("Data Not Saved");
-    //   return;
-    // }
+    let consolidatedData =
+      JSON.parse(localStorage.getItem("consolidatedData")) || {};
+    consolidatedData[data.date] = data;
 
-    let expenseData = JSON.parse(localStorage.getItem("expenseData")) || {};
-    expenseData[data.date] = data;
-
-    localStorage.setItem("expenseData", JSON.stringify(expenseData));
+    localStorage.setItem("consolidatedData", JSON.stringify(consolidatedData));
     toast.success(`Data Saved Successfully for ${data?.date}`);
   };
 
   const handleDateChange = (e) => {
     const date = e.target.value;
 
-    const data = JSON.parse(localStorage.getItem("expenseData"))?.[date];
-    console.log(data, "dataaa");
+    const data = JSON.parse(localStorage.getItem("consolidatedData"))?.[date];
 
     if (data) {
       const keys = Object.keys(data);
@@ -144,6 +135,7 @@ const NetWorthTracker = () => {
             setTotalExpenses={setTotalExpenses}
             expensesFields={expensesFields}
             setExpensesFields={setExpensesFields}
+            toast={toast}
           />
         );
     }
@@ -153,9 +145,12 @@ const NetWorthTracker = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="d-flex flex-column justify-content-start align-items-center mt-4 mx-2">
           <div className="d-flex flex-column flex-md-row align-items-center justify-content-evenly w-100 px-2 gap-2">
-            <h3 className="bg-dark text-light rounded p-1 text-center mb-2 mb-md-0">
-              Net Worth & Expense Tracker
-            </h3>
+            <div className="d-flex align-items-center justify-content-center gap-3">
+              <img src="public/expense.png" alt="Logo" width={"40"} />
+              <h3 className="bg-dark text-light rounded p-1 text-center mb-2 mb-md-0">
+                Net Worth & Expense Tracker
+              </h3>
+            </div>
             <div className="d-flex align-items-center justify-content-center gap-lg-5 gap-4 ">
               <input
                 type="month"
@@ -173,7 +168,7 @@ const NetWorthTracker = () => {
               </button>
             </div>
           </div>
-          <div className="row w-100">
+          <div className="p-0 row w-100">
             <div className="col-lg-6 col-md-8">
               <TabNavigator
                 activeTab={activeTab}
