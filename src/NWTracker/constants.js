@@ -1,4 +1,4 @@
-export const TABS = ["Assets", "Liabilities", "Income", "Expenses"];
+export const TABS = ["Overview", "Assets", "Liabilities", "Income", "Expenses"];
 
 export const Asset_Fields = [
   { label: "Shares (Inv)", field: "asset.SharesInv" },
@@ -32,6 +32,7 @@ export const INCOME_FIELDS = [
   { label: "Interest Earned", field: "income.Interest" },
   { label: "Stocks / MF Profit", field: "income.Stocks" },
   { label: "Miscellaneous Income", field: "income.Misc" },
+  { label: "EPF Income", field: "income.epfIncome" },
 ];
 export const EXPENSE_TYPES = [
   "Amazon",
@@ -41,11 +42,11 @@ export const EXPENSE_TYPES = [
   "Food",
   "Grocery",
   "Instamart",
+  "Medical",
   "Miscellaneous",
   "Movie",
   "Myntra",
   "OTT",
-  "Other",
   "Petrol",
   "Rapido",
   "Salon",
@@ -54,4 +55,5 @@ export const EXPENSE_TYPES = [
   "Utility/Bill",
   "Vacation",
   "Zomato",
+  "Other",
 ];

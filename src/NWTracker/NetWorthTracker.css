@@ -5,6 +5,9 @@
     box-sizing: border-box;
 }
 
+.btn-dark {
+    background-color: #242424;
+}
 .container{
     width: 100%;
     margin: 0;
