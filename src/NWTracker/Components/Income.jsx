@@ -10,7 +10,6 @@ const Income = ({
   setTotalIncome,
   prevMonthdata,
 }) => {
-
   const handleInputChange = (e, field) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
 
@@ -25,8 +24,11 @@ const Income = ({
       )
     );
   };
+
+  const rc = (str) => str?.split(",")?.join(""); // Remove Comma
+
   return (
-    <div className="row align-items-center justify-content-center mx-3">
+    <div className="row align-items-center justify-content-center mx-3  my-2">
       {INCOME_FIELDS.map((row, index) => {
         return (
           <div className="my-1 d-flex align-items-center" key={index}>
@@ -56,9 +58,9 @@ const Income = ({
           placeholder={"Enter EPF Data"}
           // onChange={(e) => handleInputChange(e, "income.epfInt")}
           value={
-            getValues("asset.EPF") -
-              prevMonthdata?.asset?.EPF -
-              getValues("income.epfIncome") || ""
+            rc(getValues("asset.EPF")) -
+              rc(prevMonthdata?.asset?.EPF) -
+              rc(getValues("income.epfIncome")) || ""
           }
           disabled
         />

@@ -16,7 +16,7 @@ const TabNavigator = ({ activeTab, setActiveTab, tabs, children }) => {
       </div>
       <div
         className="tab-content"
-        style={{ maxHeight: "75vh", overflowY: "auto" }}
+        style={{ maxHeight: "79vh", overflowY: "auto" }}
       >
         {children}
       </div>

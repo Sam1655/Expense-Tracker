@@ -26,11 +26,11 @@ body {
 }
 
 .tab {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.7rem;
   flex: 1;
   text-align: center;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   border-radius: 10px;
   font-weight: bold;
   transition: all 0.3s ease;
@@ -49,7 +49,7 @@ body {
 }
 
 .tab-content {
-  /* padding: 25px 0px 10px 0px; */
+  /* padding: 15px 0px; */
   background-color: #1e1e1e;
   color: #ddd;
   font-size: 16px;

@@ -9,10 +9,24 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
 import { TABS } from "./constants";
 import { ToastContainer, toast } from "react-toastify";
+import { MOCK_DATA } from "./Components/MockData";
 
 import "react-toastify/dist/ReactToastify.css";
 import "./NetWorthTracker.css";
-import { MOCK_DATA } from "./Components/MockData";
+
+import Box from "@mui/material/Box";
+import { LineChart } from "@mui/x-charts";
+import { PieChart } from "@mui/x-charts/PieChart";
+import { useDrawingArea } from "@mui/x-charts/hooks";
+import { styled } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 const NetWorthTracker = () => {
   const [activeTab, setActiveTab] = useState(4);
@@ -114,7 +128,6 @@ const NetWorthTracker = () => {
 
   const handleDateChange = (date) => {
     const data = consolidatedData?.[date];
-    console.log(data, "ssss");
     // Load Data
     if (data) {
       reset();
@@ -132,7 +145,6 @@ const NetWorthTracker = () => {
       setExpensesFields(data.expensesFields);
     } else {
       // Empty Prev Data
-      console.log("reset kia");
       reset();
       setValue("date", date);
       setTotalAssets(0);
@@ -262,6 +274,7 @@ const NetWorthTracker = () => {
             setValue={setValue}
             totalAssets={totalAssets}
             setTotalAssets={setTotalAssets}
+            prevMonthdata={prevMonthdata}
           />
         );
       case 2:
@@ -298,6 +311,98 @@ const NetWorthTracker = () => {
     }
   };
 
+  function getTop6Expenses() {
+    // Step 1: Merge same-label items
+    const data = expensesFields;
+    const merged = Object.values(
+      data.reduce((acc, { label, value, timestamp }) => {
+        const numValue = Number(value?.split(",")?.join("")); // ensure numeric
+        if (!acc[label]) {
+          acc[label] = { label, value: numValue, timestamp };
+        } else {
+          acc[label].value += numValue;
+        }
+        return acc;
+      }, {})
+    );
+
+    // Step 2: Sort by value descending
+    merged.sort((a, b) => b.value - a.value);
+
+    // Step 3: Keep top 6
+    return merged.slice(0, 7);
+  }
+
+  const returnRenderGraph = () => {
+    switch (activeTab) {
+      default:
+        const margin = { right: 50 };
+
+        // Sort the Data Lexically according to Date
+        const sortedData = Object.fromEntries(
+          Object.entries(consolidatedData).sort(([a], [b]) =>
+            a.localeCompare(b)
+          )
+        );
+
+        const keys = Object.keys(sortedData);
+        const values = Object.values(sortedData);
+
+        const uData = [];
+        // const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
+        const xLabels = [];
+
+        // for (let i = keys.length - 1; i >= 0; i--) {
+        for (let i = 0; i < keys.length; i++) {
+          uData.push(values[i].netWorth);
+          xLabels.push(keys[i]);
+        }
+        return (
+          <LineChart
+            series={[{ data: uData, label: "uv" }]}
+            xAxis={[
+              {
+                scaleType: "point",
+                data: xLabels,
+              },
+            ]}
+            yAxis={[{ width: 70 }]}
+            margin={margin}
+          />
+        );
+
+      case 4:
+        if (!expensesFields.length) return <div>No Expenses</div>;
+        const data = getTop6Expenses();
+
+        const size = {
+          width: 300,
+          height: 300,
+        };
+
+        const StyledText = styled("text")(({ theme }) => ({
+          fill: theme.palette.text.primary,
+          textAnchor: "middle",
+          dominantBaseline: "central",
+          fontSize: 20,
+        }));
+
+        function PieCenterLabel({ children }) {
+          const { width, height, left, top } = useDrawingArea();
+          return (
+            <StyledText x={left + width / 2} y={top + height / 2}>
+              {children}
+            </StyledText>
+          );
+        }
+        return (
+          <PieChart series={[{ data, innerRadius: 90 }]} {...size}>
+            <PieCenterLabel>Expenses</PieCenterLabel>
+          </PieChart>
+        );
+    }
+  };
+
   const handlePrevMonth = handleSubmit(async (data) => {
     await onSubmit(data);
     const selectedMonth = getValues("date") || currentMonth;
@@ -318,7 +423,7 @@ const NetWorthTracker = () => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="d-flex flex-column justify-content-start align-items-center mx-2">
           <div
-            className="d-flex flex-column flex-md-row align-items-center justify-content-evenly w-100 px-2 pt-4 gap-2 position-sticky top-0 z-2"
+            className="d-flex flex-column flex-md-row align-items-center justify-content-evenly w-100 px-2 py-2 gap-2 position-sticky top-0 z-2"
             style={{ backgroundColor: "#242424" }}
           >
             <div className="d-flex align-items-center justify-content-center gap-3">
@@ -329,7 +434,11 @@ const NetWorthTracker = () => {
             </div>
             <div className="d-flex align-items-center justify-content-center gap-lg-5 gap-4 ">
               <div className="d-flex gap-2 align-items-center">
-                <button className="btn btn-dark" onClick={handlePrevMonth}>
+                <button
+                  className="btn btn-dark"
+                  type="button"
+                  onClick={handlePrevMonth}
+                >
                   {"<"}
                 </button>
                 <input
@@ -341,7 +450,11 @@ const NetWorthTracker = () => {
                     handleDateChange(e.target.value);
                   }}
                 ></input>
-                <button onClick={handleNextMonth} className="btn btn-dark">
+                <button
+                  onClick={handleNextMonth}
+                  type="button"
+                  className="btn btn-dark"
+                >
                   {">"}
                 </button>
               </div>
@@ -367,7 +480,7 @@ const NetWorthTracker = () => {
             </div>
           </div>
           <div className="p-0 row w-100">
-            <div className="col-lg-6 col-md-8">
+            <div className="col-lg-6 ">
               <TabNavigator
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
@@ -376,8 +489,16 @@ const NetWorthTracker = () => {
                 {returnRenderContent()}
               </TabNavigator>
             </div>
-            <div className="col-lg-6 col-md-4 mt-4 ">
-              <Overview />
+            <div
+              className="col-lg-6  mt-4 responsive-container"
+              // style={{ minHeight: "80vh" }}
+            >
+              <ThemeProvider theme={darkTheme}>
+                <CssBaseline />
+                <Box sx={{ width: "100%", height: "100%" }} className="d-flex">
+                  {returnRenderGraph()}
+                </Box>
+              </ThemeProvider>
             </div>
           </div>
         </div>

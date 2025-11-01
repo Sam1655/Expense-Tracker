@@ -35,7 +35,8 @@ export const INCOME_FIELDS = [
   { label: "EPF Income", field: "income.epfIncome" },
 ];
 export const EXPENSE_TYPES = [
-  "Amazon",
+  "Select",
+  "Amazon", 
   "BlinkIt",
   "Cash Withdrawl",
   "Flipkart",

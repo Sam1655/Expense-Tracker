@@ -5,7 +5,6 @@ import {
   faCopy,
   faFileImport,
 } from "@fortawesome/free-solid-svg-icons";
-import { useLongPress } from "@custom-react-hooks/use-long-press";
 import { EXPENSE_TYPES } from "../constants";
 import { useEffect, useRef } from "react";
 
@@ -16,8 +15,8 @@ const Expenses = ({
   setExpensesFields,
   toast,
 }) => {
-  // Create refs for each TextInput field
-  const inputRefs = useRef([]);
+  const inputAmountRefs = useRef([]); //For Amount TextInput
+  const inputRefs = useRef([]); // For Label="Other" input
 
   const handleInputChange = (e, index) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
@@ -36,14 +35,6 @@ const Expenses = ({
       )
     );
   }, [expensesFields]);
-
-  const handleDelete = (index) => {
-    if (window.confirm("Do you want to Delete?")) {
-      // expensesFields.splice(index, 1);
-      // setExpensesFields([...expensesFields]);
-      setExpensesFields(expensesFields.filter((_, i) => i !== index));
-    }
-  };
 
   const handleExpenseImport = () => {
     navigator.clipboard
@@ -72,6 +63,12 @@ const Expenses = ({
   };
 
   const handleExpenseAdd = () => {
+    console.log(expensesFields);
+    if (
+      expensesFields.length &&
+      (!expensesFields[0].value || expensesFields[0].label === EXPENSE_TYPES[0])
+    )
+      return;
     setExpensesFields((prev) => [
       {
         label: EXPENSE_TYPES[0],
@@ -128,18 +125,8 @@ const Expenses = ({
           </div>
         </div>
         {expensesFields?.map((row, index) => {
-          // const longPressEvents = useLongPress(() => handleDelete(index), {
-          //   threshold: 500,
-          //   onStart: () => console.log("Press started"),
-          //   onFinish: () => console.log("Long press finished"),
-          //   onCancel: () => console.log("Press cancelled"),
-          // });
           return (
-            <div
-              className="my-1 d-flex align-items-center"
-              key={index}
-              // {...longPressEvents}
-            >
+            <div className="my-1 d-flex align-items-center" key={index}>
               {expensesFields[index]?.label !== "Other" &&
               EXPENSE_TYPES.includes(expensesFields[index]?.label) ? (
                 <select
@@ -150,14 +137,15 @@ const Expenses = ({
                     setExpensesFields([...expensesFields]);
 
                     // Automatically focus the corresponding TextInput
-                    setTimeout(() => {
-                      requestAnimationFrame(() => {
-                        const inputElement = inputRefs.current[index];
-                        if (inputElement) {
-                          inputElement.focus();
-                        }
-                      });
-                    }, 250);
+                    requestAnimationFrame(() => {
+                      const inputElement =
+                        e.target.value === "Other"
+                          ? inputRefs.current[index]
+                          : inputAmountRefs.current[index];
+                      if (inputElement) {
+                        inputElement.focus();
+                      }
+                    });
                   }}
                 >
                   {EXPENSE_TYPES.map((name, index1) => (
@@ -168,26 +156,22 @@ const Expenses = ({
                 </select>
               ) : (
                 <input
+                  ref={(el) => (inputRefs.current[index] = el)}
                   type="text"
-                  style={{
-                    width: "160px",
-                    padding: "0.5rem 1rem",
-                    fontSize: "0.9rem",
-                    border: "2px solid #444",
-                    borderRadius: "8px",
-                    backgroundColor: "#333",
-                    color: "#fff",
-                  }}
+                  className="mx-2 col-md-4 expenseInput"
                   onBlur={(e) => {
                     row.label = e.target.value;
                     setExpensesFields([...expensesFields]);
+                  }}
+                  onClick={(e) => {
+                    if (e.target.value === "Other") e.target.value = "";
                   }}
                   defaultValue={expensesFields[index]?.label}
                 ></input>
               )}
               <label className="mx-2 col-md-1">:</label>
               <TextInput
-                ref={(el) => (inputRefs.current[index] = el)} // store ref
+                ref={(el) => (inputAmountRefs.current[index] = el)} // store ref
                 onChange={(e) => handleInputChange(e, index)}
                 onClick={(e) => {
                   if (e.target.value === "0") e.target.value = "";
@@ -195,9 +179,6 @@ const Expenses = ({
                 placeholder={row.label}
                 value={row.value}
               />
-              {/* <button type="button" onClick={() => handleDelete(index)}>
-                X
-              </button> */}
               <span className="date-Span">
                 {expensesFields[index]?.timestamp
                   ? new Date(

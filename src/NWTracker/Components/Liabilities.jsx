@@ -9,8 +9,6 @@ const Liabilities = ({
   totalLiabilities,
   setTotalLiabilities,
 }) => {
-
-
   const handleInputChange = (e, field) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
 
@@ -26,7 +24,7 @@ const Liabilities = ({
     );
   };
   return (
-    <div className="row align-items-center justify-content-center mx-3">
+    <div className="row align-items-center justify-content-center mx-3 my-2">
       {LIABILITIES_FIELD.map((row, index) => {
         return (
           <div className="my-1 d-flex align-items-center" key={index}>
