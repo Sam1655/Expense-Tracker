@@ -6,8 +6,15 @@ import Liabilities from "./Components/Liabilities";
 import Expenses from "./Components/Expenses";
 import { useForm, useWatch } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faCopy } from "@fortawesome/free-solid-svg-icons";
-import { TABS } from "./constants";
+import {
+  faCheck,
+  faCopy,
+  faAngleLeft,
+  faAngleRight,
+  faCaretUp,
+  faCaretDown,
+} from "@fortawesome/free-solid-svg-icons";
+import { Asset_Fields, TABS } from "./constants";
 import { ToastContainer, toast } from "react-toastify";
 import { MOCK_DATA } from "./Components/MockData";
 
@@ -21,6 +28,8 @@ import { useDrawingArea } from "@mui/x-charts/hooks";
 import { styled } from "@mui/material/styles";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
+import PlotLineCharts from "./Components/PlotLineCharts";
+import Overview from "./Components/Overview";
 
 const darkTheme = createTheme({
   palette: {
@@ -34,13 +43,16 @@ const NetWorthTracker = () => {
   const [totalLiabilities, setTotalLiabilities] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
+  const [xAxisField, setxAxisField] = useState([]);
   const [expensesFields, setExpensesFields] = useState([]);
   const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
   const [consolidatedData, setConsolidatedData] = useState(
     JSON.parse(localStorage.getItem("consolidatedData")) || MOCK_DATA
   );
 
-  console.log(consolidatedData, "consolidatedData");
+  // console.log(consolidatedData, "consolidatedData");
+
+  const rc = (str) => +String(str).replace(/,/g, "");
 
   useEffect(() => {
     setNetWorth(totalAssets - totalLiabilities);
@@ -88,18 +100,12 @@ const NetWorthTracker = () => {
 
   const prevMonthdata = consolidatedData?.[prevMonth];
 
-  const projectedExpense = prevMonthdata
-    ? totalIncome +
-      prevMonthdata?.netWorth -
-      netWorth +
-      (getValues("asset.EPF") -
-        prevMonthdata?.asset?.EPF -
-        getValues("income.epfIncome")) // EPF Int
-    : "—";
-
-  const oneMonthChange = netWorth - prevMonthdata?.netWorth;
-  const netWorthPerChange =
-    ((netWorth - prevMonthdata?.netWorth) / prevMonthdata?.netWorth) * 100;
+  const netWorthRet =
+    netWorth -
+    rc(getValues("asset.SharesInv")) +
+    rc(getValues("asset.SharesVal")) -
+    rc(getValues("asset.MFInv")) +
+    rc(getValues("asset.MFVal"));
 
   const onSubmit = (data) => {
     data = {
@@ -110,6 +116,7 @@ const NetWorthTracker = () => {
       totalExpenses,
       expensesFields,
       netWorth,
+      netWorthRet,
     };
     if (!data.netWorth && !expensesFields.length) {
       // toast.error("Error Saving Empty Data!");
@@ -155,117 +162,18 @@ const NetWorthTracker = () => {
     }
   };
 
-  const Overview = () => (
-    <div
-      className="container px-4 py-4 rounded-3 shadow-sm text-light"
-      style={{
-        maxWidth: "500px",
-        margin: "auto",
-        fontFamily: "system-ui, sans-serif",
-        backgroundColor: "#1e1e1e",
-      }}
-    >
-      <div className="mb-3 text-center">
-        <p className="m-0 fs-5 fw-medium">My Networth</p>
-      </div>
-
-      {/* Main Net Worth */}
-      <div className="mb-4 text-center">
-        <h1 className="display-5 fw-bold mb-1">
-          ₹{netWorth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        </h1>
-        <p className="text-secondary">Assets − Liabilities</p>
-      </div>
-
-      {/* Assets and Liabilities */}
-      <div className="row text-center mb-4">
-        <div className="col-4">
-          <h6 className="fw-semibold text-uppercase text-secondary">Assets</h6>
-          <h4 className="fw-bold">
-            ₹ {totalAssets.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
-        </div>
-        <div className="col-4">
-          <h6 className="fw-semibold text-uppercase text-secondary">
-            Liabilities
-          </h6>
-          <h4 className="fw-bold">
-            ₹{" "}
-            {totalLiabilities.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
-        </div>
-        <div className="col-4">
-          <h6 className="fw-semibold text-uppercase text-secondary">Income</h6>
-          <h4 className="fw-bold">
-            ₹ {totalIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <hr
-        style={{
-          border: "none",
-          height: "1px",
-          backgroundColor: "#555",
-        }}
-      />
-
-      {/* Expenses */}
-      <div className="row text-center my-4">
-        <div className="col-6">
-          <h6 className="fw-semibold text-uppercase text-secondary">
-            Projected Expenses
-          </h6>
-          <h4 className="fw-bold">
-            ₹{" "}
-            {projectedExpense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
-        </div>
-        <div className="col-6">
-          <h6 className="fw-semibold text-uppercase text-secondary">
-            Actual Expenses
-          </h6>
-          <h4 className="fw-bold">
-            ₹ {totalExpenses.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
-        </div>
-      </div>
-
-      {/* Divider */}
-      <hr
-        style={{
-          border: "none",
-          height: "1px",
-          backgroundColor: "#555",
-        }}
-      />
-
-      {/* 1 Month Change */}
-      <div className="row text-center my-4">
-        <div className="col-6">
-          <h6 className="fw-semibold text-uppercase text-secondary">
-            1 Month Change
-          </h6>
-
-          <h4
-            className={`fw-bold ${
-              oneMonthChange >= 0 ? "text-success" : "text-danger"
-            }`}
-          >
-            {prevMonthdata
-              ? oneMonthChange.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              : "—"}
-          </h4>
-        </div>
-      </div>
-    </div>
-  );
-
   const returnRenderContent = () => {
     switch (activeTab) {
       case 0:
-        return <Overview />;
+        return (
+          <Overview
+            consolidatedData={consolidatedData}
+            selectedDate={selectedDate}
+            getValues={getValues}
+            netWorth={netWorth}
+            setxAxisField={setxAxisField}
+          />
+        );
       case 1:
         return (
           <Assets
@@ -275,6 +183,7 @@ const NetWorthTracker = () => {
             totalAssets={totalAssets}
             setTotalAssets={setTotalAssets}
             prevMonthdata={prevMonthdata}
+            setxAxisField={setxAxisField}
           />
         );
       case 2:
@@ -285,6 +194,7 @@ const NetWorthTracker = () => {
             setValue={setValue}
             totalLiabilities={totalLiabilities}
             setTotalLiabilities={setTotalLiabilities}
+            setxAxisField={setxAxisField}
           />
         );
       case 3:
@@ -296,6 +206,7 @@ const NetWorthTracker = () => {
             totalIncome={totalIncome}
             setTotalIncome={setTotalIncome}
             prevMonthdata={prevMonthdata}
+            setxAxisField={setxAxisField}
           />
         );
       case 4:
@@ -335,41 +246,38 @@ const NetWorthTracker = () => {
 
   const returnRenderGraph = () => {
     switch (activeTab) {
-      default:
-        const margin = { right: 50 };
-
-        // Sort the Data Lexically according to Date
-        const sortedData = Object.fromEntries(
-          Object.entries(consolidatedData).sort(([a], [b]) =>
-            a.localeCompare(b)
-          )
-        );
-
-        const keys = Object.keys(sortedData);
-        const values = Object.values(sortedData);
-
-        const uData = [];
-        // const pData = [2400, 1398, 9800, 3908, 4800, 3800, 4300];
-        const xLabels = [];
-
-        // for (let i = keys.length - 1; i >= 0; i--) {
-        for (let i = 0; i < keys.length; i++) {
-          uData.push(values[i].netWorth);
-          xLabels.push(keys[i]);
-        }
+      case 0: {
         return (
-          <LineChart
-            series={[{ data: uData, label: "uv" }]}
-            xAxis={[
-              {
-                scaleType: "point",
-                data: xLabels,
-              },
-            ]}
-            yAxis={[{ width: 70 }]}
-            margin={margin}
+          <PlotLineCharts
+            consolidatedData={consolidatedData}
+            xAxisField={xAxisField}
           />
         );
+      }
+      case 1: {
+        return (
+          <PlotLineCharts
+            consolidatedData={consolidatedData}
+            xAxisField={xAxisField}
+          />
+        );
+      }
+      case 2: {
+        return (
+          <PlotLineCharts
+            consolidatedData={consolidatedData}
+            xAxisField={xAxisField}
+          />
+        );
+      }
+      case 3: {
+        return (
+          <PlotLineCharts
+            consolidatedData={consolidatedData}
+            xAxisField={xAxisField}
+          />
+        );
+      }
 
       case 4:
         if (!expensesFields.length) return <div>No Expenses</div>;
@@ -397,7 +305,7 @@ const NetWorthTracker = () => {
         }
         return (
           <PieChart series={[{ data, innerRadius: 90 }]} {...size}>
-            <PieCenterLabel>Expenses</PieCenterLabel>
+            <PieCenterLabel>Top Expenses</PieCenterLabel>
           </PieChart>
         );
     }
@@ -439,7 +347,7 @@ const NetWorthTracker = () => {
                   type="button"
                   onClick={handlePrevMonth}
                 >
-                  {"<"}
+                  <FontAwesomeIcon icon={faAngleLeft} />
                 </button>
                 <input
                   type="month"
@@ -455,7 +363,7 @@ const NetWorthTracker = () => {
                   type="button"
                   className="btn btn-dark"
                 >
-                  {">"}
+                  <FontAwesomeIcon icon={faAngleRight} />
                 </button>
               </div>
               <button

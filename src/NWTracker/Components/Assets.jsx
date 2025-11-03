@@ -1,5 +1,9 @@
+import { useEffect } from "react";
 import { Asset_Fields, Asset_Return_Fields } from "../constants";
 import TextInput from "./TextInput";
+
+import { faCaretUp, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Assets = ({
   register,
@@ -8,8 +12,26 @@ const Assets = ({
   totalAssets,
   setTotalAssets,
   prevMonthdata,
+  setxAxisField,
 }) => {
   const rc = (str) => str?.split(",")?.join(""); // Remove Comma
+
+  useEffect(() => {
+    setxAxisField([
+      {
+        label: "N/W (Inv)",
+        field: "netWorth",
+      },
+      {
+        label: "N/W with Returns",
+        field: "netWorthRet",
+      },
+      {
+        label: "Assets",
+        field: "totalAssets",
+      },
+    ]);
+  }, []);
 
   const handleInputChange = (e, field) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, "");
@@ -30,12 +52,9 @@ const Assets = ({
         const prevMonthValue = prevMonthdata?.[fields[0]]?.[fields[1]];
         const currentVal = getValues(row.field);
 
-        const perChg =
+        const Chg =
           currentVal && prevMonthValue
-            ? (
-                ((rc(currentVal) - rc(prevMonthValue)) / rc(prevMonthValue)) *
-                100
-              ).toFixed(2)
+            ? rc(currentVal) - rc(prevMonthValue)
             : "";
         return (
           <div className="my-1 d-flex align-items-center" key={index}>
@@ -51,34 +70,29 @@ const Assets = ({
                 onChange={(e) => handleInputChange(e, row.field)}
                 placeholder={prevMonthValue || row.label}
                 className="rupee-input"
+                onClick={() => setxAxisField([row])}
               />
             </div>
-            {perChg && (
+            {Chg.toString() && (
               <span
-                className={`mx-1 ${
-                  perChg > 0 ? "text-success" : "text-danger"
-                }`}
+                className={`mx-1 ${Chg >= 0 ? "text-success" : "text-danger"}`}
                 style={{ fontSize: "0.6rem" }}
               >
-                {/* {perChg > 0 ? "↑" : "↓"} */}
-                {perChg}%
+                {Chg > 0 ? "+" : ""}
+                {Chg}
               </span>
             )}
           </div>
         );
       })}
       {Asset_Return_Fields.map((row, index) => {
+        const val = getValues(row.field);
+        const inv = getValues(row.field.replace("Val", "Inv"));
+
+        const perChg = (((rc(val) - rc(inv)) / rc(inv)) * 100).toFixed(1);
+
         const fields = row.field.split(".");
         const prevMonthValue = prevMonthdata?.[fields[0]]?.[fields[1]];
-        const currentVal = getValues(row.field);
-
-        const perChg =
-          currentVal && prevMonthValue
-            ? (
-                ((rc(currentVal) - rc(prevMonthValue)) / rc(prevMonthValue)) *
-                100
-              ).toFixed(2)
-            : "";
         return (
           <div className="my-1 d-flex align-items-center" key={index}>
             <p className="text-start mb-0" style={{ flex: "0 0 45%" }}>
@@ -93,6 +107,7 @@ const Assets = ({
                 onChange={(e) => handleInputChange(e, row.field)}
                 placeholder={prevMonthValue || row.label}
                 className="rupee-input"
+                onClick={() => setxAxisField([row])}
               />
             </div>
             {perChg && (
@@ -102,8 +117,12 @@ const Assets = ({
                 }`}
                 style={{ fontSize: "0.6rem" }}
               >
-                {/* {perChg > 0 ? "↑" : "↓"} */}
-                {perChg}%
+                {perChg > 0 ? (
+                  <FontAwesomeIcon icon={faCaretUp} />
+                ) : (
+                  <FontAwesomeIcon icon={faCaretDown} />
+                )}
+                {Math.abs(perChg)}%
               </span>
             )}
           </div>

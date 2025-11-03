@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import TextInput from "./TextInput";
 import { LIABILITIES_FIELD } from "../constants";
 
@@ -8,6 +8,7 @@ const Liabilities = ({
   setValue,
   totalLiabilities,
   setTotalLiabilities,
+  setxAxisField,
 }) => {
   const handleInputChange = (e, field) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
@@ -23,6 +24,15 @@ const Liabilities = ({
       )
     );
   };
+
+  useEffect(() => {
+    setxAxisField([
+      {
+        label: "Liabilities",
+        field: "totalLiabilities",
+      },
+    ]);
+  }, []);
   return (
     <div className="row align-items-center justify-content-center mx-3 my-2">
       {LIABILITIES_FIELD.map((row, index) => {

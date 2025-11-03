@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TextInput from "./TextInput";
 import { INCOME_FIELDS } from "../constants";
 
@@ -9,7 +9,25 @@ const Income = ({
   totalIncome,
   setTotalIncome,
   prevMonthdata,
+  setxAxisField,
 }) => {
+  useEffect(() => {
+    setxAxisField([
+      {
+        label: "Total Income",
+        field: "totalIncome",
+      },
+      {
+        label: "Salary",
+        field: "income.Monthly",
+      },
+      {
+        label: "Expenses",
+        field: "totalExpenses",
+      },
+    ]);
+  }, []);
+
   const handleInputChange = (e, field) => {
     e.target.value = e.target.value.replace(/[^0-9]/g, ""); // Only Take 0-9 Inputs
 
@@ -42,6 +60,7 @@ const Income = ({
               field={row.field}
               placeholder={row.label}
               onChange={(e) => handleInputChange(e, row.field)}
+              onClick={() => setxAxisField([row])}
             />
           </div>
         );

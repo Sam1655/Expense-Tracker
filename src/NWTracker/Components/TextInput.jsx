@@ -28,6 +28,7 @@ const TextInput = forwardRef(
             placeholder={placeholder}
             {...register(field)}
             onChange={onChange}
+            onClick={onClick}
             value={value}
             defaultValue={defaultValue}
             disabled={disabled}
