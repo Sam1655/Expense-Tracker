@@ -80,9 +80,12 @@ const Expenses = ({
   };
 
   return (
-    <div className="mx-3">
-      <div className="row align-items-center justify-content-center">
-        <div
+    <div
+      className="mx-3 responsive-expense-container"
+      // style={{ maxHeight: "52vh" }}
+    >
+      <div className="row align-items-center justify-content-center mt-2">
+        {/* <div
           className="d-flex justify-content-around align-items-center mb-4 position-sticky top-0 pt-3 pb-2"
           style={{ zIndex: "1", backgroundColor: "#1e1e1e" }}
         >
@@ -123,7 +126,7 @@ const Expenses = ({
               Add
             </label>
           </div>
-        </div>
+        </div> */}
         {expensesFields?.map((row, index) => {
           return (
             <div className="my-1 d-flex align-items-center" key={index}>
@@ -206,6 +209,15 @@ const Expenses = ({
               disabled
               placeholder="Total"
             />
+            <div>
+              <button
+                type="button"
+                className="btn btn-light rounded-circle"
+                onClick={handleExpenseAdd}
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+            </div>
           </div>
         </div>
       </div>

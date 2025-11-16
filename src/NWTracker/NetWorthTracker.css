@@ -10,16 +10,46 @@
     /* default for small screens */
 }
 
+.responsive-expense-container{
+    max-height: 52vh;
+}
+
 @media (min-width: 992px) {
     .responsive-container {
         min-height: 80vh;
         /* for larger screens */
+    }
+    
+    .responsive-expense-container {
+        min-height: 70vh;
+        /* max-height: 52vh; */
     }
 }
 
 .btn-dark {
     background-color: #242424;
 }
+
+.save-btn {
+    height: 40px;
+    width: 40px;
+    background-color: #28a745;
+    /* default green */
+    transition: background-color 0.3s ease;
+}
+
+/* Hover color */
+.save-btn:hover {
+    background-color: #218838;
+    /* darker green */
+}
+
+/* Flash color when clicked */
+.save-btn.clicked {
+    background-color: #34d058 !important;
+    /* bright green flash */
+}
+
 .container{
     width: 100%;
     margin: 0;

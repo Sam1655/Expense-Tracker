@@ -16,6 +16,11 @@ const PlotLineCharts = ({ consolidatedData, xAxisField }) => {
   const keys = Object.keys(sortedData);
   const values = Object.values(sortedData);
 
+  if (!values[values.length - 1].netWorth) {
+    keys.pop();
+    values.pop();
+  }
+
   const xLabels = [];
   const series = xAxisField.map((row) => {
     return {

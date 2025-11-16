@@ -11,10 +11,8 @@ import {
   faCopy,
   faAngleLeft,
   faAngleRight,
-  faCaretUp,
-  faCaretDown,
 } from "@fortawesome/free-solid-svg-icons";
-import { Asset_Fields, TABS } from "./constants";
+import { TABS } from "./constants";
 import { ToastContainer, toast } from "react-toastify";
 import { MOCK_DATA } from "./Components/MockData";
 
@@ -22,7 +20,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./NetWorthTracker.css";
 
 import Box from "@mui/material/Box";
-import { LineChart } from "@mui/x-charts";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useDrawingArea } from "@mui/x-charts/hooks";
 import { styled } from "@mui/material/styles";
@@ -58,6 +55,7 @@ const NetWorthTracker = () => {
     setNetWorth(totalAssets - totalLiabilities);
   }, [totalAssets, totalExpenses, totalIncome, totalLiabilities]);
 
+  // Unsaved Changes handler
   // useEffect(() => {
   //   const handleBeforeUnload = (event) => {
   //     event.preventDefault();
@@ -106,6 +104,14 @@ const NetWorthTracker = () => {
     rc(getValues("asset.SharesVal")) -
     rc(getValues("asset.MFInv")) +
     rc(getValues("asset.MFVal"));
+
+  const [clicked, setClicked] = useState(false);
+
+  const handleClick = () => {
+    setClicked(true);
+    setTimeout(() => setClicked(false), 1000); // reset after 1 sec
+    toast.success(`Data Saved Successfully for ${selectedMonth}`);
+  };
 
   const onSubmit = (data) => {
     data = {
@@ -369,8 +375,10 @@ const NetWorthTracker = () => {
               <button
                 type="submit"
                 title="Save"
-                className="rounded-circle bg-success d-flex align-items-center justify-content-center border-0"
-                style={{ height: "40px", width: "40px" }}
+                onClick={handleClick}
+                className={`save-btn rounded-circle d-flex align-items-center justify-content-center border-0 ${
+                  clicked ? "clicked" : ""
+                }`}
               >
                 <FontAwesomeIcon icon={faCheck} />
               </button>
@@ -397,10 +405,7 @@ const NetWorthTracker = () => {
                 {returnRenderContent()}
               </TabNavigator>
             </div>
-            <div
-              className="col-lg-6  mt-4 responsive-container"
-              // style={{ minHeight: "80vh" }}
-            >
+            <div className="col-lg-6 responsive-container">
               <ThemeProvider theme={darkTheme}>
                 <CssBaseline />
                 <Box sx={{ width: "100%", height: "100%" }} className="d-flex">
