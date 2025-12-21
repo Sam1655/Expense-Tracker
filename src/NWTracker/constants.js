@@ -42,6 +42,7 @@ export const EXPENSE_TYPES = [
   "Flipkart",
   "Food",
   "Grocery",
+  "Home",
   "Instamart",
   "Medical",
   "Miscellaneous",

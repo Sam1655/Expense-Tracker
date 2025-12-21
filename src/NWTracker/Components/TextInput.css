@@ -1,7 +1,6 @@
 .rupee-input-container {
     position: relative;
     width: 100%;
-    max-width: 300px;
 }
 
 .rupee-symbol {
@@ -16,7 +15,7 @@
 .rupee-input {
     width: 100%;
     padding: 0.4rem 0.4rem 0.4rem 1.8rem;
-    border: 1px solid #ccc;
+    border: 1px solid #444;
     background-color: #242424;
     border-radius: 5px;
     font-size: 0.9rem;
@@ -35,6 +34,7 @@
     background-color: transparent;
     border: none;
     color: white;
+    opacity: 1; 
 }
 
 .rupee-input::placeholder {

@@ -27,6 +27,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import PlotLineCharts from "./Components/PlotLineCharts";
 import Overview from "./Components/Overview";
+import AddExpenseModal from "./Components/AddExpenseModal";
 
 const darkTheme = createTheme({
   palette: {
@@ -40,6 +41,7 @@ const NetWorthTracker = () => {
   const [totalLiabilities, setTotalLiabilities] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpenses, setTotalExpenses] = useState(0);
+  const [modal, setModal] = useState({});
   const [xAxisField, setxAxisField] = useState([]);
   const [expensesFields, setExpensesFields] = useState([]);
   const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
@@ -54,20 +56,6 @@ const NetWorthTracker = () => {
   useEffect(() => {
     setNetWorth(totalAssets - totalLiabilities);
   }, [totalAssets, totalExpenses, totalIncome, totalLiabilities]);
-
-  // Unsaved Changes handler
-  // useEffect(() => {
-  //   const handleBeforeUnload = (event) => {
-  //     event.preventDefault();
-  //     event.returnValue = "";
-  //   };
-
-  //   window.addEventListener("beforeunload", handleBeforeUnload);
-
-  //   return () => {
-  //     window.removeEventListener("beforeunload", handleBeforeUnload);
-  //   };
-  // }, []);
 
   const {
     register,
@@ -223,6 +211,7 @@ const NetWorthTracker = () => {
             expensesFields={expensesFields}
             setExpensesFields={setExpensesFields}
             toast={toast}
+            setModal={setModal}
           />
         );
     }
@@ -417,6 +406,15 @@ const NetWorthTracker = () => {
         </div>
       </form>
       <ToastContainer position="bottom-right" theme="dark" />
+      {modal.isOpen && (
+        <AddExpenseModal
+          expensesFields={expensesFields}
+          setExpensesFields={setExpensesFields}
+          setModal={setModal}
+          index={modal.index}
+          toast={toast}
+        />
+      )}
     </div>
   );
 };
