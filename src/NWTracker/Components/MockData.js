@@ -1,15 +1,15 @@
 export const MOCK_DATA = {
-  "2025-01": {
-    date: "2025-01",
+  "2026-01": {
+    date: "2026-01",
     totalAssets: 1015000,
     totalLiabilities: 2000,
     totalIncome: 70000,
     totalExpenses: 15000,
     expensesFields: [
-      { label: "Grocery", value: "2100", timestamp: "2025-01-05T10:00:00Z" },
-      { label: "Fuel", value: "900", timestamp: "2025-01-10T12:00:00Z" },
-      { label: "Amazon", value: "3100", timestamp: "2025-01-15T15:00:00Z" },
-      { label: "Dining", value: "1400", timestamp: "2025-01-20T18:00:00Z" },
+      { label: "Grocery", value: "2100", timestamp: "2026-01-05T10:00:00Z" },
+      { label: "Fuel", value: "900", timestamp: "2026-01-10T12:00:00Z" },
+      { label: "Amazon", value: "3100", timestamp: "2026-01-15T15:00:00Z" },
+      { label: "Dining", value: "1400", timestamp: "2026-01-20T18:00:00Z" },
     ],
     netWorth: 1013000,
     income: {
@@ -43,18 +43,18 @@ export const MOCK_DATA = {
     netWorthRet: 1022000,
   },
 
-  "2025-02": {
-    date: "2025-02",
+  "2026-02": {
+    date: "2026-02",
     totalAssets: 1023000,
     totalLiabilities: 2300,
     totalIncome: 69000,
     totalExpenses: 15800,
     expensesFields: [
-      { label: "Grocery", value: "2300", timestamp: "2025-02-03T09:00:00Z" },
-      { label: "Fuel", value: "1400", timestamp: "2025-02-08T14:00:00Z" },
-      { label: "Amazon", value: "2600", timestamp: "2025-02-15T13:00:00Z" },
-      { label: "Dining", value: "2000", timestamp: "2025-02-20T19:00:00Z" },
-      { label: "Snacks", value: "900", timestamp: "2025-02-25T16:00:00Z" },
+      { label: "Grocery", value: "2300", timestamp: "2026-02-03T09:00:00Z" },
+      { label: "Fuel", value: "1400", timestamp: "2026-02-08T14:00:00Z" },
+      { label: "Amazon", value: "2600", timestamp: "2026-02-15T13:00:00Z" },
+      { label: "Dining", value: "2000", timestamp: "2026-02-20T19:00:00Z" },
+      { label: "Snacks", value: "900", timestamp: "2026-02-25T16:00:00Z" },
     ],
     netWorth: 1020700,
     income: {
@@ -88,18 +88,18 @@ export const MOCK_DATA = {
     netWorthRet: 1029500,
   },
 
-  "2025-03": {
-    date: "2025-03",
+  "2026-03": {
+    date: "2026-03",
     totalAssets: 1019000,
     totalLiabilities: 2600,
     totalIncome: 74000,
     totalExpenses: 14900,
     expensesFields: [
-      { label: "Grocery", value: "1900", timestamp: "2025-03-05T10:00:00Z" },
-      { label: "Fuel", value: "1600", timestamp: "2025-03-10T11:00:00Z" },
-      { label: "Amazon", value: "2900", timestamp: "2025-03-15T14:00:00Z" },
-      { label: "Dining", value: "1500", timestamp: "2025-03-20T18:00:00Z" },
-      { label: "Snacks", value: "1000", timestamp: "2025-03-25T16:00:00Z" },
+      { label: "Grocery", value: "1900", timestamp: "2026-03-05T10:00:00Z" },
+      { label: "Fuel", value: "1600", timestamp: "2026-03-10T11:00:00Z" },
+      { label: "Amazon", value: "2900", timestamp: "2026-03-15T14:00:00Z" },
+      { label: "Dining", value: "1500", timestamp: "2026-03-20T18:00:00Z" },
+      { label: "Snacks", value: "1000", timestamp: "2026-03-25T16:00:00Z" },
     ],
     netWorth: 1016400,
     income: {
@@ -133,17 +133,17 @@ export const MOCK_DATA = {
     netWorthRet: 1025000,
   },
 
-  "2025-04": {
-    date: "2025-04",
+  "2026-04": {
+    date: "2026-04",
     totalAssets: 1027000,
     totalLiabilities: 2100,
     totalIncome: 76000,
     totalExpenses: 17500,
     expensesFields: [
-      { label: "Fuel", value: "1800", timestamp: "2025-04-03T12:00:00Z" },
-      { label: "Grocery", value: "2550", timestamp: "2025-04-10T09:00:00Z" },
-      { label: "Amazon", value: "3500", timestamp: "2025-04-15T13:00:00Z" },
-      { label: "Dining", value: "1750", timestamp: "2025-04-20T18:00:00Z" },
+      { label: "Fuel", value: "1800", timestamp: "2026-04-03T12:00:00Z" },
+      { label: "Grocery", value: "2550", timestamp: "2026-04-10T09:00:00Z" },
+      { label: "Amazon", value: "3500", timestamp: "2026-04-15T13:00:00Z" },
+      { label: "Dining", value: "1750", timestamp: "2026-04-20T18:00:00Z" },
     ],
     netWorth: 1024900,
     income: {
@@ -177,18 +177,18 @@ export const MOCK_DATA = {
     netWorthRet: 1033000,
   },
 
-  "2025-05": {
-    date: "2025-05",
+  "2026-05": {
+    date: "2026-05",
     totalAssets: 1034000,
     totalLiabilities: 2600,
     totalIncome: 75000,
     totalExpenses: 18200,
     expensesFields: [
-      { label: "Fuel", value: "1700", timestamp: "2025-05-05T11:00:00Z" },
-      { label: "Grocery", value: "2650", timestamp: "2025-05-10T10:00:00Z" },
-      { label: "Amazon", value: "3350", timestamp: "2025-05-15T14:00:00Z" },
-      { label: "Dining", value: "2200", timestamp: "2025-05-20T19:00:00Z" },
-      { label: "Fuel", value: "1300", timestamp: "2025-05-25T15:00:00Z" },
+      { label: "Fuel", value: "1700", timestamp: "2026-05-05T11:00:00Z" },
+      { label: "Grocery", value: "2650", timestamp: "2026-05-10T10:00:00Z" },
+      { label: "Amazon", value: "3350", timestamp: "2026-05-15T14:00:00Z" },
+      { label: "Dining", value: "2200", timestamp: "2026-05-20T19:00:00Z" },
+      { label: "Fuel", value: "1300", timestamp: "2026-05-25T15:00:00Z" },
     ],
     netWorth: 1031400,
     income: {
@@ -222,18 +222,18 @@ export const MOCK_DATA = {
     netWorthRet: 1039000,
   },
 
-  "2025-06": {
-    date: "2025-06",
+  "2026-06": {
+    date: "2026-06",
     totalAssets: 1029000,
     totalLiabilities: 2400,
     totalIncome: 78000,
     totalExpenses: 16800,
     expensesFields: [
-      { label: "Grocery", value: "2500", timestamp: "2025-06-03T09:00:00Z" },
-      { label: "Fuel", value: "1500", timestamp: "2025-06-08T12:00:00Z" },
-      { label: "Amazon", value: "3600", timestamp: "2025-06-15T15:00:00Z" },
-      { label: "Dining", value: "2100", timestamp: "2025-06-20T18:00:00Z" },
-      { label: "Grocery", value: "1100", timestamp: "2025-06-25T16:00:00Z" },
+      { label: "Grocery", value: "2500", timestamp: "2026-06-03T09:00:00Z" },
+      { label: "Fuel", value: "1500", timestamp: "2026-06-08T12:00:00Z" },
+      { label: "Amazon", value: "3600", timestamp: "2026-06-15T15:00:00Z" },
+      { label: "Dining", value: "2100", timestamp: "2026-06-20T18:00:00Z" },
+      { label: "Grocery", value: "1100", timestamp: "2026-06-25T16:00:00Z" },
     ],
     netWorth: 1026600,
     income: {
@@ -267,17 +267,17 @@ export const MOCK_DATA = {
     netWorthRet: 1023000,
   },
 
-  "2025-07": {
-    date: "2025-07",
+  "2026-07": {
+    date: "2026-07",
     totalAssets: 1041000,
     totalLiabilities: 2800,
     totalIncome: 79000,
     totalExpenses: 19000,
     expensesFields: [
-      { label: "Fuel", value: "1750", timestamp: "2025-07-03T10:00:00Z" },
-      { label: "Grocery", value: "2950", timestamp: "2025-07-08T12:00:00Z" },
-      { label: "Amazon", value: "3700", timestamp: "2025-07-15T13:00:00Z" },
-      { label: "Dining", value: "2250", timestamp: "2025-07-20T19:00:00Z" },
+      { label: "Fuel", value: "1750", timestamp: "2026-07-03T10:00:00Z" },
+      { label: "Grocery", value: "2950", timestamp: "2026-07-08T12:00:00Z" },
+      { label: "Amazon", value: "3700", timestamp: "2026-07-15T13:00:00Z" },
+      { label: "Dining", value: "2250", timestamp: "2026-07-20T19:00:00Z" },
     ],
     netWorth: 1038200,
     income: {
@@ -311,18 +311,18 @@ export const MOCK_DATA = {
     netWorthRet: 1047000,
   },
 
-  "2025-08": {
-    date: "2025-08",
+  "2026-08": {
+    date: "2026-08",
     totalAssets: 1038000,
     totalLiabilities: 2500,
     totalIncome: 76500,
     totalExpenses: 17200,
     expensesFields: [
-      { label: "Grocery", value: "2600", timestamp: "2025-08-03T11:00:00Z" },
-      { label: "Fuel", value: "1900", timestamp: "2025-08-08T14:00:00Z" },
-      { label: "Amazon", value: "3400", timestamp: "2025-08-15T15:00:00Z" },
-      { label: "Dining", value: "2300", timestamp: "2025-08-20T18:00:00Z" },
-      { label: "Snacks", value: "700", timestamp: "2025-08-25T16:00:00Z" },
+      { label: "Grocery", value: "2600", timestamp: "2026-08-03T11:00:00Z" },
+      { label: "Fuel", value: "1900", timestamp: "2026-08-08T14:00:00Z" },
+      { label: "Amazon", value: "3400", timestamp: "2026-08-15T15:00:00Z" },
+      { label: "Dining", value: "2300", timestamp: "2026-08-20T18:00:00Z" },
+      { label: "Snacks", value: "700", timestamp: "2026-08-25T16:00:00Z" },
     ],
     netWorth: 1035500,
     income: {
@@ -356,18 +356,18 @@ export const MOCK_DATA = {
     netWorthRet: 1043000,
   },
 
-  "2025-09": {
-    date: "2025-09",
+  "2026-09": {
+    date: "2026-09",
     totalAssets: 1052000,
     totalLiabilities: 2900,
     totalIncome: 80500,
     totalExpenses: 18800,
     expensesFields: [
-      { label: "Fuel", value: "2000", timestamp: "2025-09-03T09:00:00Z" },
-      { label: "Grocery", value: "2800", timestamp: "2025-09-08T10:00:00Z" },
-      { label: "Amazon", value: "3800", timestamp: "2025-09-15T14:00:00Z" },
-      { label: "Dining", value: "2400", timestamp: "2025-09-20T19:00:00Z" },
-      { label: "Snacks", value: "900", timestamp: "2025-09-25T15:00:00Z" },
+      { label: "Fuel", value: "2000", timestamp: "2026-09-03T09:00:00Z" },
+      { label: "Grocery", value: "2800", timestamp: "2026-09-08T10:00:00Z" },
+      { label: "Amazon", value: "3800", timestamp: "2026-09-15T14:00:00Z" },
+      { label: "Dining", value: "2400", timestamp: "2026-09-20T19:00:00Z" },
+      { label: "Snacks", value: "900", timestamp: "2026-09-25T15:00:00Z" },
     ],
     netWorth: 1049100,
     income: {
@@ -401,18 +401,18 @@ export const MOCK_DATA = {
     netWorthRet: 1059000,
   },
 
-  "2025-10": {
-    date: "2025-10",
+  "2026-10": {
+    date: "2026-10",
     totalAssets: 1045000,
     totalLiabilities: 3100,
     totalIncome: 82000,
     totalExpenses: 17800,
     expensesFields: [
-      { label: "Grocery", value: "2650", timestamp: "2025-10-03T09:00:00Z" },
-      { label: "Fuel", value: "2100", timestamp: "2025-10-08T11:00:00Z" },
-      { label: "Amazon", value: "3600", timestamp: "2025-10-15T14:00:00Z" },
-      { label: "Dining", value: "2500", timestamp: "2025-10-20T19:00:00Z" },
-      { label: "Fuel", value: "1500", timestamp: "2025-10-25T16:00:00Z" },
+      { label: "Grocery", value: "2650", timestamp: "2026-10-03T09:00:00Z" },
+      { label: "Fuel", value: "2100", timestamp: "2026-10-08T11:00:00Z" },
+      { label: "Amazon", value: "3600", timestamp: "2026-10-15T14:00:00Z" },
+      { label: "Dining", value: "2500", timestamp: "2026-10-20T19:00:00Z" },
+      { label: "Fuel", value: "1500", timestamp: "2026-10-25T16:00:00Z" },
     ],
     netWorth: 1041900,
     income: {
@@ -446,17 +446,17 @@ export const MOCK_DATA = {
     netWorthRet: 1050000,
   },
 
-  "2025-11": {
-    date: "2025-11",
+  "2026-11": {
+    date: "2026-11",
     totalAssets: 1058000,
     totalLiabilities: 2700,
     totalIncome: 79500,
     totalExpenses: 16500,
     expensesFields: [
-      { label: "Fuel", value: "2000", timestamp: "2025-11-03T09:00:00Z" },
-      { label: "Grocery", value: "3100", timestamp: "2025-11-08T10:00:00Z" },
-      { label: "Amazon", value: "3300", timestamp: "2025-11-15T14:00:00Z" },
-      { label: "Dining", value: "2200", timestamp: "2025-11-20T19:00:00Z" },
+      { label: "Fuel", value: "2000", timestamp: "2026-11-03T09:00:00Z" },
+      { label: "Grocery", value: "3100", timestamp: "2026-11-08T10:00:00Z" },
+      { label: "Amazon", value: "3300", timestamp: "2026-11-15T14:00:00Z" },
+      { label: "Dining", value: "2200", timestamp: "2026-11-20T19:00:00Z" },
     ],
     netWorth: 1055300,
     income: {
@@ -490,18 +490,18 @@ export const MOCK_DATA = {
     netWorthRet: 1064000,
   },
 
-  "2025-12": {
-    date: "2025-12",
+  "2026-12": {
+    date: "2026-12",
     totalAssets: 1069000,
     totalLiabilities: 3300,
     totalIncome: 83000,
     totalExpenses: 21000,
     expensesFields: [
-      { label: "Grocery", value: "3400", timestamp: "2025-12-03T09:00:00Z" },
-      { label: "Fuel", value: "2200", timestamp: "2025-12-08T12:00:00Z" },
-      { label: "Amazon", value: "4200", timestamp: "2025-12-15T14:00:00Z" },
-      { label: "Dining", value: "2500", timestamp: "2025-12-20T19:00:00Z" },
-      { label: "Snacks", value: "1000", timestamp: "2025-12-25T16:00:00Z" },
+      { label: "Grocery", value: "3400", timestamp: "2026-12-03T09:00:00Z" },
+      { label: "Fuel", value: "2200", timestamp: "2026-12-08T12:00:00Z" },
+      { label: "Amazon", value: "4200", timestamp: "2026-12-15T14:00:00Z" },
+      { label: "Dining", value: "2500", timestamp: "2026-12-20T19:00:00Z" },
+      { label: "Snacks", value: "1000", timestamp: "2026-12-25T16:00:00Z" },
     ],
     netWorth: 1065700,
     income: {
