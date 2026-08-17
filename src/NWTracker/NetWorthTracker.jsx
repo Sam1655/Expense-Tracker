@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import TabNavigator from "./Components/TabNavigator";
 import Income from "./Components/Income";
 import Assets from "./Components/Assets";
@@ -46,10 +46,25 @@ const NetWorthTracker = () => {
   const [expensesFields, setExpensesFields] = useState([]);
   const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
   const [consolidatedData, setConsolidatedData] = useState(
-    JSON.parse(localStorage.getItem("consolidatedData")) || MOCK_DATA
+    JSON.parse(localStorage.getItem("consolidatedData")) || MOCK_DATA,
   );
+  const debounceTimeout = useRef(null);
 
-  // console.log(consolidatedData, "consolidatedData");
+  useEffect(() => {
+    // Debouncing for Auto Save
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+    debounceTimeout.current = setTimeout(() => {
+      localStorage.setItem(
+        "consolidatedData",
+        JSON.stringify(consolidatedData),
+      );
+      // toast.success(`Data Saved Successfully for ${selectedMonth}`);
+    }, 500);
+  }, [consolidatedData]);
+
+  console.log(consolidatedData, "consolidatedData");
 
   const rc = (str) => +String(str).replace(/,/g, "");
 
@@ -93,13 +108,15 @@ const NetWorthTracker = () => {
     rc(getValues("asset.MFInv")) +
     rc(getValues("asset.MFVal"));
 
-  const [clicked, setClicked] = useState(false);
-
-  const handleClick = () => {
-    setClicked(true);
-    setTimeout(() => setClicked(false), 1000); // reset after 1 sec
-    toast.success(`Data Saved Successfully for ${selectedMonth}`);
-  };
+  useEffect(() => {
+    handleSubmit(onSubmit)();
+  }, [
+    totalAssets,
+    totalLiabilities,
+    totalIncome,
+    totalExpenses,
+    expensesFields,
+  ]);
 
   const onSubmit = (data) => {
     data = {
@@ -120,7 +137,7 @@ const NetWorthTracker = () => {
     // Save Data in State and Local Storage
     setConsolidatedData((prev) => {
       prev[data.date] = data;
-      localStorage.setItem("consolidatedData", JSON.stringify(prev));
+      // localStorage.setItem("consolidatedData", JSON.stringify(prev));
       return { ...prev };
     });
 
@@ -229,7 +246,7 @@ const NetWorthTracker = () => {
           acc[label].value += numValue;
         }
         return acc;
-      }, {})
+      }, {}),
     );
 
     // Step 2: Sort by value descending
@@ -306,16 +323,14 @@ const NetWorthTracker = () => {
     }
   };
 
-  const handlePrevMonth = handleSubmit(async (data) => {
-    await onSubmit(data);
+  const handlePrevMonth = handleSubmit((data) => {
     const selectedMonth = getValues("date") || currentMonth;
     const [year, month] = selectedMonth.split("-").map(Number);
     const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);
     setValue("date", prevMonth);
   });
 
-  const handleNextMonth = handleSubmit(async (data) => {
-    await onSubmit(data);
+  const handleNextMonth = handleSubmit((data) => {
     const selectedMonth = getValues("date") || currentMonth;
     const [year, month] = selectedMonth.split("-").map(Number);
     const prevMonth = new Date(year, month + 1, 1).toISOString().slice(0, 7);
@@ -349,7 +364,6 @@ const NetWorthTracker = () => {
                   {...register("date")}
                   control={control}
                   onChange={(e) => {
-                    handleSubmit(onSubmit)();
                     handleDateChange(e.target.value);
                   }}
                 ></input>
@@ -361,22 +375,13 @@ const NetWorthTracker = () => {
                   <FontAwesomeIcon icon={faAngleRight} />
                 </button>
               </div>
-              <button
-                type="submit"
-                title="Save"
-                onClick={handleClick}
-                className={`save-btn rounded-circle d-flex align-items-center justify-content-center border-0 ${
-                  clicked ? "clicked" : ""
-                }`}
-              >
-                <FontAwesomeIcon icon={faCheck} />
-              </button>
+
               <button
                 type="button"
                 className="btn btn-light rounded-circle"
                 onClick={() =>
                   navigator.clipboard.writeText(
-                    JSON.stringify(consolidatedData)
+                    JSON.stringify(consolidatedData),
                   )
                 }
               >

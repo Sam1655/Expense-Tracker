@@ -28,7 +28,8 @@ export const LIABILITIES_FIELD = [
 
 export const INCOME_FIELDS = [
   { label: "Net Month Salary", field: "income.Monthly" },
-  { label: "Rental Income Salary", field: "income.Rental" },
+  { label: "Rental Income", field: "income.Rental" },
+  { label: "Cashback Received", field: "income.Cashback" },
   { label: "Interest Earned", field: "income.Interest" },
   { label: "Stocks / MF Profit", field: "income.Stocks" },
   { label: "Miscellaneous Income", field: "income.Misc" },
@@ -51,6 +52,7 @@ export const EXPENSE_TYPES = [
   "Myntra",
   "OTT",
   "Party",
+  "Parking",
   "Petrol",
   "Rapido",
   "Salon",
