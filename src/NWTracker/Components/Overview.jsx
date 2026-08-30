@@ -1,10 +1,21 @@
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { useEffect } from "react";
+import { rc } from "../NetWorthTracker";
 
-const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxisField }) => {
-  const rc = (str) => +String(str).replace(/,/g, "");
+// Guards against undefined/null values and gives Indian digit grouping (1,23,456)
+const formatCurrency = (num) => {
+  const n = Number(num) || 0;
+  return n.toLocaleString("en-IN");
+};
 
+const Overview = ({
+  consolidatedData,
+  selectedDate,
+  getValues,
+  netWorth,
+  setxAxisField,
+}) => {
   const selectedMonth = selectedDate;
   const [year, month] = selectedMonth.split("-").map(Number);
   const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);
@@ -12,35 +23,36 @@ const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxi
   const prevMonthdata = consolidatedData?.[prevMonth];
   const curr = consolidatedData?.[selectedDate];
 
-  const projectedExpense = prevMonthdata
-    ? curr?.totalIncome +
-      prevMonthdata?.netWorth -
+  const hasPrevMonth = Boolean(prevMonthdata?.netWorth);
+
+  // Fall back to the saved snapshot's asset/income data if the live form
+  // field isn't registered yet (e.g. user hasn't opened the Assets tab this session)
+  const currEPF = rc(getValues("asset.EPF") ?? curr?.asset?.EPF);
+  const prevEPF = rc(prevMonthdata?.asset?.EPF);
+  const epfIncome = rc(
+    getValues("income.epfIncome") ?? curr?.income?.epfIncome,
+  );
+
+  const projectedExpense = hasPrevMonth
+    ? (curr?.totalIncome ?? 0) +
+      prevMonthdata.netWorth -
       netWorth +
-      (getValues("asset.EPF")?.split(",")?.join("") -
-        prevMonthdata?.asset?.EPF?.split(",")?.join("") -
-        getValues("income.epfIncome")?.split(",")?.join("")) // EPF Int
-    : "—";
+      (currEPF - prevEPF - epfIncome) // EPF Int
+    : null;
 
-  const oneMonthChange = netWorth - prevMonthdata?.netWorth;
+  const oneMonthChange = hasPrevMonth
+    ? netWorth - prevMonthdata.netWorth
+    : null;
+
   const netWorthPerChange =
-    ((netWorth - prevMonthdata?.netWorth) / prevMonthdata?.netWorth) * 100;
+    hasPrevMonth && prevMonthdata.netWorth !== 0
+      ? ((netWorth - prevMonthdata.netWorth) / prevMonthdata.netWorth) * 100
+      : null;
 
-  const netWorthRet =
-    netWorth -
-    rc(getValues("asset.SharesInv")) +
-    rc(getValues("asset.SharesVal")) -
-    rc(getValues("asset.MFInv")) +
-    rc(getValues("asset.MFVal"));
   useEffect(() => {
     setxAxisField([
-      {
-        label: "N/W (Inv)",
-        field: "netWorth",
-      },
-      {
-        label: "N/W with Returns",
-        field: "netWorthRet",
-      },
+      { label: "N/W (Inv)", field: "netWorth" },
+      { label: "N/W with Returns", field: "netWorthRet" },
     ]);
   }, []);
 
@@ -60,9 +72,7 @@ const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxi
 
       {/* Main Net Worth */}
       <div className="mb-4 text-center">
-        <h1 className="display-5 fw-bold mb-1">
-          ₹{netWorth.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-        </h1>
+        <h1 className="display-5 fw-bold mb-1">₹{formatCurrency(netWorth)}</h1>
         <p className="text-secondary">Assets − Liabilities</p>
       </div>
 
@@ -70,39 +80,23 @@ const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxi
       <div className="row text-center mb-4">
         <div className="col-4">
           <h6 className="fw-semibold text-uppercase text-secondary">Assets</h6>
-          <h4 className="fw-bold">
-            ₹{" "}
-            {curr?.totalAssets.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
+          <h4 className="fw-bold">₹ {formatCurrency(curr?.totalAssets)}</h4>
         </div>
         <div className="col-4">
           <h6 className="fw-semibold text-uppercase text-secondary">
             Liabilities
           </h6>
           <h4 className="fw-bold">
-            ₹{" "}
-            {curr?.totalLiabilities
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            ₹ {formatCurrency(curr?.totalLiabilities)}
           </h4>
         </div>
         <div className="col-4">
           <h6 className="fw-semibold text-uppercase text-secondary">Income</h6>
-          <h4 className="fw-bold">
-            ₹{" "}
-            {curr?.totalIncome.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
+          <h4 className="fw-bold">₹ {formatCurrency(curr?.totalIncome)}</h4>
         </div>
       </div>
 
-      {/* Divider */}
-      <hr
-        style={{
-          border: "none",
-          height: "1px",
-          backgroundColor: "#555",
-        }}
-      />
+      <hr style={{ border: "none", height: "1px", backgroundColor: "#555" }} />
 
       {/* Expenses */}
       <div className="row text-center my-4">
@@ -111,31 +105,20 @@ const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxi
             Projected Expenses
           </h6>
           <h4 className="fw-bold">
-            ₹{" "}
-            {projectedExpense.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
+            {projectedExpense === null
+              ? "—"
+              : `₹ ${formatCurrency(projectedExpense)}`}
           </h4>
         </div>
         <div className="col-6">
           <h6 className="fw-semibold text-uppercase text-secondary">
             Actual Expenses
           </h6>
-          <h4 className="fw-bold">
-            ₹{" "}
-            {curr?.totalExpenses
-              .toString()
-              .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-          </h4>
+          <h4 className="fw-bold">₹ {formatCurrency(curr?.totalExpenses)}</h4>
         </div>
       </div>
 
-      {/* Divider */}
-      <hr
-        style={{
-          border: "none",
-          height: "1px",
-          backgroundColor: "#555",
-        }}
-      />
+      <hr style={{ border: "none", height: "1px", backgroundColor: "#555" }} />
 
       {/* 1 Month Change */}
       <div className="row text-center my-4">
@@ -143,15 +126,16 @@ const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxi
           <h6 className="fw-semibold text-uppercase text-secondary">
             1 Month Change
           </h6>
-
           <h4
             className={`fw-bold ${
-              oneMonthChange >= 0 ? "text-success" : "text-danger"
+              oneMonthChange === null
+                ? ""
+                : oneMonthChange >= 0
+                  ? "text-success"
+                  : "text-danger"
             }`}
           >
-            {prevMonthdata
-              ? oneMonthChange.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-              : "—"}
+            {oneMonthChange === null ? "—" : formatCurrency(oneMonthChange)}
           </h4>
         </div>
         <div className="col-6">
@@ -160,16 +144,21 @@ const Overview = ({ consolidatedData, selectedDate, getValues, netWorth, setxAxi
           </h6>
           <h4
             className={`fw-bold ${
-              netWorthPerChange >= 0 ? "text-success" : "text-danger"
+              netWorthPerChange === null
+                ? ""
+                : netWorthPerChange >= 0
+                  ? "text-success"
+                  : "text-danger"
             }`}
           >
-            <FontAwesomeIcon
-              icon={netWorthPerChange >= 0 ? faCaretUp : faCaretDown}
-            />
-
-            {prevMonthdata
-              ? ` ${Math.abs(netWorthPerChange.toFixed(2))} %`
-              : "—"}
+            {netWorthPerChange !== null && (
+              <FontAwesomeIcon
+                icon={netWorthPerChange >= 0 ? faCaretUp : faCaretDown}
+              />
+            )}
+            {netWorthPerChange === null
+              ? " —"
+              : ` ${Math.abs(netWorthPerChange).toFixed(2)} %`}
           </h4>
         </div>
       </div>

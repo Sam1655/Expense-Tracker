@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import TextInput from "./TextInput";
 import { INCOME_FIELDS } from "../constants";
+import { rc } from "../NetWorthTracker";
 
 const Income = ({
   register,
@@ -43,7 +44,7 @@ const Income = ({
     );
   };
 
-  const rc = (str) => str?.split(",")?.join(""); // Remove Comma
+  // const rc = (str) => str?.split(",")?.join(""); // Remove Comma
 
   return (
     <div className="row align-items-center justify-content-center mx-3  my-2">

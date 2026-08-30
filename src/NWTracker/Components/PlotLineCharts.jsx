@@ -1,22 +1,21 @@
 import { LineChart } from "@mui/x-charts";
 import React from "react";
+import { rc } from "../NetWorthTracker";
 
 const PlotLineCharts = ({ consolidatedData, xAxisField }) => {
-  const rc = (str) => +String(str).replace(/,/g, "");
-
   const margin = { right: 50 };
 
   // if (!xAxisField.length) return;
 
   // Sort the Data Lexically according to Date
   const sortedData = Object.fromEntries(
-    Object.entries(consolidatedData).sort(([a], [b]) => a.localeCompare(b))
+    Object.entries(consolidatedData).sort(([a], [b]) => a.localeCompare(b)),
   );
 
   const keys = Object.keys(sortedData);
   const values = Object.values(sortedData);
 
-  if (!values[values.length - 1].netWorth) {
+  if (!values[values.length - 1]?.netWorth) {
     keys.pop();
     values.pop();
   }

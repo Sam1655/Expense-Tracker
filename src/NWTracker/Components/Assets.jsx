@@ -4,6 +4,7 @@ import TextInput from "./TextInput";
 
 import { faCaretUp, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { rc } from "../NetWorthTracker";
 
 const Assets = ({
   register,
@@ -14,7 +15,7 @@ const Assets = ({
   prevMonthdata,
   setxAxisField,
 }) => {
-  const rc = (str) => str?.split(",")?.join(""); // Remove Comma
+  // const rc = (str) => str?.split(",")?.join(""); // Remove Comma
 
   useEffect(() => {
     setxAxisField([

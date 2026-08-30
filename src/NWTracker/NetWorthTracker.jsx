@@ -35,6 +35,12 @@ const darkTheme = createTheme({
   },
 });
 
+// export const rc = (str) => +String(str).replace(/,/g, "");
+export const rc = (str) => {  // Remove Comma
+  const n = Number(String(str ?? "0").replace(/,/g, ""));
+  return Number.isNaN(n) ? 0 : n;
+};
+
 const NetWorthTracker = () => {
   const [activeTab, setActiveTab] = useState(4);
   const [totalAssets, setTotalAssets] = useState(0);
@@ -44,7 +50,7 @@ const NetWorthTracker = () => {
   const [modal, setModal] = useState({});
   const [xAxisField, setxAxisField] = useState([]);
   const [expensesFields, setExpensesFields] = useState([]);
-  const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
+  // const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
   const [consolidatedData, setConsolidatedData] = useState(
     JSON.parse(localStorage.getItem("consolidatedData")) || MOCK_DATA,
   );
@@ -56,6 +62,7 @@ const NetWorthTracker = () => {
       clearTimeout(debounceTimeout.current);
     }
     debounceTimeout.current = setTimeout(() => {
+      console.warn("Announced : Data saved in LocalStorage");
       localStorage.setItem(
         "consolidatedData",
         JSON.stringify(consolidatedData),
@@ -66,11 +73,9 @@ const NetWorthTracker = () => {
 
   console.log(consolidatedData, "consolidatedData");
 
-  const rc = (str) => +String(str).replace(/,/g, "");
-
-  useEffect(() => {
-    setNetWorth(totalAssets - totalLiabilities);
-  }, [totalAssets, totalExpenses, totalIncome, totalLiabilities]);
+  // useEffect(() => {
+  //   setNetWorth(totalAssets - totalLiabilities);
+  // }, [totalAssets, totalExpenses, totalIncome, totalLiabilities]);
 
   const {
     register,
@@ -79,7 +84,7 @@ const NetWorthTracker = () => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm({
     defaultValues: { date: new Date().toISOString().split("T")[0].slice(0, 7) },
   });
@@ -100,7 +105,7 @@ const NetWorthTracker = () => {
   const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);
 
   const prevMonthdata = consolidatedData?.[prevMonth];
-
+  const netWorth = totalAssets - totalLiabilities;
   const netWorthRet =
     netWorth -
     rc(getValues("asset.SharesInv")) +
@@ -129,15 +134,22 @@ const NetWorthTracker = () => {
       netWorth,
       netWorthRet,
     };
-    if (!data.netWorth && !expensesFields.length) {
-      // toast.error("Error Saving Empty Data!");
+    console.log(data, "datasss");
+    if (
+      !data.totalAssets &&
+      !data.totalLiabilities &&
+      !data.totalIncome &&
+      !expensesFields.length
+    ) {
+      console.warn("Announced : Empty Data Not saved in State");
       return;
     }
 
-    // Save Data in State and Local Storage
+    // Save Data in State
     setConsolidatedData((prev) => {
       prev[data.date] = data;
       // localStorage.setItem("consolidatedData", JSON.stringify(prev));
+      console.warn("Announced : Data saved in State");
       return { ...prev };
     });
 
@@ -146,8 +158,10 @@ const NetWorthTracker = () => {
 
   const handleDateChange = (date) => {
     const data = consolidatedData?.[date];
+    console.log(data, "Announced :");
     // Load Data
     if (data) {
+      console.warn("Announced handleDateChange : Loading New Data for ", date);
       reset();
       setValue("date", date);
       const keys = Object.keys(data);
@@ -163,6 +177,10 @@ const NetWorthTracker = () => {
       setExpensesFields(data.expensesFields);
     } else {
       // Empty Prev Data
+      console.warn(
+        "Announced handleDateChange : No Prev Data Found for ",
+        date,
+      );
       reset();
       setValue("date", date);
       setTotalAssets(0);
@@ -234,12 +252,12 @@ const NetWorthTracker = () => {
     }
   };
 
-  function getTop6Expenses() {
+  function getTop7Expenses() {
     // Step 1: Merge same-label items
     const data = expensesFields;
     const merged = Object.values(
       data.reduce((acc, { label, value, timestamp }) => {
-        const numValue = Number(value?.split(",")?.join("")); // ensure numeric
+        const numValue = rc(value); // ensure numeric
         if (!acc[label]) {
           acc[label] = { label, value: numValue, timestamp };
         } else {
@@ -293,7 +311,7 @@ const NetWorthTracker = () => {
 
       case 4:
         if (!expensesFields.length) return <div>No Expenses</div>;
-        const data = getTop6Expenses();
+        const data = getTop7Expenses();
 
         const size = {
           width: 300,
@@ -362,10 +380,10 @@ const NetWorthTracker = () => {
                 <input
                   type="month"
                   {...register("date")}
-                  control={control}
-                  onChange={(e) => {
-                    handleDateChange(e.target.value);
-                  }}
+                  // control={control}
+                  // onChange={(e) => {
+                  //   handleDateChange(e.target.value);
+                  // }}
                 ></input>
                 <button
                   onClick={handleNextMonth}
