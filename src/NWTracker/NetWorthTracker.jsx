@@ -36,13 +36,15 @@ const darkTheme = createTheme({
 });
 
 // export const rc = (str) => +String(str).replace(/,/g, "");
-export const rc = (str) => {  // Remove Comma
+export const rc = (str) => {
+  // Remove Comma
   const n = Number(String(str ?? "0").replace(/,/g, ""));
   return Number.isNaN(n) ? 0 : n;
 };
 
+const currentMonth = new Date().toISOString().split("T")[0].slice(0, 7);
+
 const NetWorthTracker = () => {
-  const [activeTab, setActiveTab] = useState(4);
   const [totalAssets, setTotalAssets] = useState(0);
   const [totalLiabilities, setTotalLiabilities] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
@@ -50,6 +52,7 @@ const NetWorthTracker = () => {
   const [modal, setModal] = useState({});
   const [xAxisField, setxAxisField] = useState([]);
   const [expensesFields, setExpensesFields] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
   // const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
   const [consolidatedData, setConsolidatedData] = useState(
     JSON.parse(localStorage.getItem("consolidatedData")) || MOCK_DATA,
@@ -86,7 +89,7 @@ const NetWorthTracker = () => {
     reset,
     formState: { errors, isDirty },
   } = useForm({
-    defaultValues: { date: new Date().toISOString().split("T")[0].slice(0, 7) },
+    defaultValues: { date: currentMonth },
   });
 
   const selectedDate = useWatch({
@@ -94,12 +97,13 @@ const NetWorthTracker = () => {
     name: "date",
   });
 
+  if (!selectedDate) setValue("date", currentMonth);
+
   useEffect(() => {
     // Load Data
     handleDateChange(selectedDate.toString());
   }, [selectedDate]);
 
-  const currentMonth = new Date().toISOString().split("T")[0].slice(0, 7);
   const selectedMonth = getValues("date");
   const [year, month] = selectedMonth.split("-").map(Number);
   const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);
@@ -139,15 +143,33 @@ const NetWorthTracker = () => {
       !data.totalAssets &&
       !data.totalLiabilities &&
       !data.totalIncome &&
-      !expensesFields.length
+      !expensesFields?.length &&
+      !consolidatedData[data.date]
     ) {
       console.warn("Announced : Empty Data Not saved in State");
       return;
     }
 
-    // Save Data in State
+    // Set Data in State
     setConsolidatedData((prev) => {
       prev[data.date] = data;
+
+      // Remove any Empty Entries from Consolidated Data
+      const emptyData = Object.entries(prev).find(
+        (arr) =>
+          !arr[1].totalAssets &&
+          !arr[1].totalLiabilities &&
+          !arr[1].totalIncome &&
+          !arr[1].expensesFields?.length,
+      );
+
+      if (emptyData) {
+        delete prev[emptyData[0]];
+        console.warn(
+          "Announced : Empty Data deleted in State : ",
+          emptyData[0],
+        );
+      }
       // localStorage.setItem("consolidatedData", JSON.stringify(prev));
       console.warn("Announced : Data saved in State");
       return { ...prev };
@@ -158,7 +180,11 @@ const NetWorthTracker = () => {
 
   const handleDateChange = (date) => {
     const data = consolidatedData?.[date];
-    console.log(data, "Announced :");
+    if (
+      data?.date === currentMonth &&
+      consolidatedData?.[currentMonth]?.expensesFields.length
+    )
+      setActiveTab(4);
     // Load Data
     if (data) {
       console.warn("Announced handleDateChange : Loading New Data for ", date);
@@ -170,6 +196,7 @@ const NetWorthTracker = () => {
       for (let i = 0; i < keys.length; i++) {
         setValue(keys[i], values[i]);
       }
+
       setTotalAssets(data?.totalAssets);
       setTotalLiabilities(data?.totalLiabilities);
       setTotalIncome(data?.totalIncome);

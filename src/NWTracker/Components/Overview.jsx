@@ -33,19 +33,19 @@ const Overview = ({
     getValues("income.epfIncome") ?? curr?.income?.epfIncome,
   );
 
-  const projectedExpense = hasPrevMonth
-    ? (curr?.totalIncome ?? 0) +
-      prevMonthdata.netWorth -
-      netWorth +
-      (currEPF - prevEPF - epfIncome) // EPF Int
-    : null;
+  const projectedExpense =
+    hasPrevMonth && netWorth
+      ? (curr?.totalIncome ?? 0) +
+        prevMonthdata.netWorth -
+        netWorth +
+        (currEPF - prevEPF - epfIncome) // EPF Int
+      : null;
 
-  const oneMonthChange = hasPrevMonth
-    ? netWorth - prevMonthdata.netWorth
-    : null;
+  const oneMonthChange =
+    hasPrevMonth && netWorth ? netWorth - prevMonthdata.netWorth : null;
 
   const netWorthPerChange =
-    hasPrevMonth && prevMonthdata.netWorth !== 0
+    hasPrevMonth && netWorth && prevMonthdata.netWorth !== 0
       ? ((netWorth - prevMonthdata.netWorth) / prevMonthdata.netWorth) * 100
       : null;
 
