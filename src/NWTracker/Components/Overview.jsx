@@ -145,14 +145,14 @@ const Overview = ({
           <h4 className="fw-bold">
             {projectedExpense === null
               ? "—"
-              : `₹ ${displayCurrency(projectedExpense)}`}
+              : `₹ ${displayCurrency(projectedExpense, true)}`}
           </h4>
         </div>
         <div className="col-6">
           <h6 className="fw-semibold text-uppercase text-secondary">
             Recorded Expenses
           </h6>
-          <h4 className="fw-bold">₹ {displayCurrency(curr?.totalExpenses)}</h4>
+          <h4 className="fw-bold">₹ {displayCurrency(curr?.totalExpenses, true)}</h4>
         </div>
       </div>
 

@@ -77,11 +77,11 @@ const PlotLineCharts = ({ consolidatedData, xAxisField }) => {
           data: xLabels,
           valueFormatter: formatXAxisLabel,
           tickLabelInterval: (_, index) =>
-            xLabels.length <= 10 ||
-            index % Math.ceil(xLabels.length / 10) !== 0,
+            xLabels.length <= 6 ||
+            index % Math.ceil(xLabels.length / 6) === 0,
           tickLabelStyle: {
             // textAnchor: "end",
-            fontSize: 12,
+            fontSize: 10,
           },
         },
       ]}
