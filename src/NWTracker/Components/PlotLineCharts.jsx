@@ -3,7 +3,7 @@ import React from "react";
 import { rc } from "../NetWorthTracker";
 
 const PlotLineCharts = ({ consolidatedData, xAxisField }) => {
-  const margin = { right: 50 };
+  const margin = { right:50};
 
   // if (!xAxisField.length) return;
 
@@ -45,6 +45,29 @@ const PlotLineCharts = ({ consolidatedData, xAxisField }) => {
 
     xLabels.push(k);
   });
+
+  const formatXAxisLabel = (value) => {
+    const [year, month] = value.split("-").map(Number);
+    return new Date(year, month - 1, 1).toLocaleDateString("en-IN", {
+      month: "short",
+      year: "2-digit",
+    });
+  };
+
+  const formatYAxisLabel = (value) => {
+    const absoluteValue = Math.abs(value);
+    if (absoluteValue >= 10000000) {
+      return `${(value / 10000000).toFixed(1)}Cr`;
+    }
+    if (absoluteValue >= 100000) {
+      return `${(value / 100000).toFixed(1)}L`;
+    }
+    if (absoluteValue >= 1000) {
+      return `${(value / 1000).toFixed(1)}K`;
+    }
+    return value.toLocaleString("en-IN");
+  };
+
   return (
     <LineChart
       series={series}
@@ -52,10 +75,47 @@ const PlotLineCharts = ({ consolidatedData, xAxisField }) => {
         {
           scaleType: "point",
           data: xLabels,
+          valueFormatter: formatXAxisLabel,
+          tickLabelInterval: (_, index) =>
+            xLabels.length <= 10 ||
+            index % Math.ceil(xLabels.length / 10) !== 0,
+          tickLabelStyle: {
+            // textAnchor: "end",
+            fontSize: 12,
+          },
         },
       ]}
-      yAxis={[{ width: 70 }]}
+      yAxis={[{ width: 90, valueFormatter: formatYAxisLabel }]}
       margin={margin}
+      slotProps={{
+        tooltip: {
+          sx: {
+            backgroundColor: "#242424",
+            color: "#fff",
+            "& .MuiChartsTooltip-cell": {
+              color: "#fff",
+            },
+            "& .MuiChartsTooltip-labelCell": {
+              color: "#fff",
+            },
+            "& .MuiChartsTooltip-valueCell": {
+              color: "#fff",
+            },
+            "& .MuiChartsTooltip-axisValueCell": {
+              color: "#fff !important",
+            },
+            "& th, & td": {
+              color: "#fff !important",
+            },
+            "& caption.MuiTypography-root": {
+              color: "#ddd !important",
+            },
+            "& .MuiTypography-root": {
+              color: "#fff !important",
+            },
+          },
+        },
+      }}
     />
   );
 };

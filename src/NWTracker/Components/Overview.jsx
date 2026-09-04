@@ -1,11 +1,30 @@
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretDown,
+  faCaretUp,
+  faEye,
+  faEyeSlash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { rc } from "../NetWorthTracker";
 
 // Guards against undefined/null values and gives Indian digit grouping (1,23,456)
-const formatCurrency = (num) => {
+const formatCurrency = (num, showFullValue) => {
   const n = Number(num) || 0;
+
+  if (showFullValue) {
+    // Returns Full Value 12,23,456 instead of 12.23L
+    return n.toLocaleString("en-IN");
+  }
+  if (n >= 10000000) {
+    return `${(num / 10000000).toFixed(2)}Cr`;
+  }
+  if (n >= 100000) {
+    return `${(num / 100000).toFixed(2)}L`;
+  }
+  if (n >= 1000) {
+    return `${(num / 1000).toFixed(1)}K`;
+  }
   return n.toLocaleString("en-IN");
 };
 
@@ -16,6 +35,7 @@ const Overview = ({
   netWorth,
   setxAxisField,
 }) => {
+  const [showDetails, setShowDetails] = useState(false);
   const selectedMonth = selectedDate;
   const [year, month] = selectedMonth.split("-").map(Number);
   const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);
@@ -49,6 +69,9 @@ const Overview = ({
       ? ((netWorth - prevMonthdata.netWorth) / prevMonthdata.netWorth) * 100
       : null;
 
+  const displayCurrency = (value, showFullValue = false) =>
+    showDetails ? formatCurrency(value, showFullValue) : "****";
+
   useEffect(() => {
     setxAxisField([
       { label: "N/W (Inv)", field: "netWorth" },
@@ -66,33 +89,48 @@ const Overview = ({
         backgroundColor: "#1e1e1e",
       }}
     >
-      <div className="mb-3 text-center">
+      <div className="mb-3 d-flex align-items-center justify-content-center">
         <p className="m-0 fs-5 fw-medium">My Networth</p>
       </div>
 
       {/* Main Net Worth */}
-      <div className="mb-4 text-center">
-        <h1 className="display-5 fw-bold mb-1">₹{formatCurrency(netWorth)}</h1>
-        <p className="text-secondary">Assets − Liabilities</p>
+      <div className="d-flex align-items-center justify-content-center gap-2">
+        <h1 className="display-5 fw-bold mb-1">
+          ₹{displayCurrency(netWorth, true)}
+        </h1>
+        <button
+          type="button"
+          className="btn btn-sm btn-dark"
+          onClick={() => setShowDetails((visible) => !visible)}
+          aria-label={
+            showDetails ? "Hide financial details" : "Show financial details"
+          }
+          title={
+            showDetails ? "Hide financial details" : "Show financial details"
+          }
+        >
+          <FontAwesomeIcon icon={showDetails ? faEyeSlash : faEye} />
+        </button>
       </div>
+      <p className="text-secondary">Assets − Liabilities</p>
 
       {/* Assets and Liabilities */}
       <div className="row text-center mb-4">
         <div className="col-4">
           <h6 className="fw-semibold text-uppercase text-secondary">Assets</h6>
-          <h4 className="fw-bold">₹ {formatCurrency(curr?.totalAssets)}</h4>
+          <h4 className="fw-bold">₹ {displayCurrency(curr?.totalAssets)}</h4>
         </div>
         <div className="col-4">
           <h6 className="fw-semibold text-uppercase text-secondary">
             Liabilities
           </h6>
           <h4 className="fw-bold">
-            ₹ {formatCurrency(curr?.totalLiabilities)}
+            ₹ {displayCurrency(curr?.totalLiabilities)}
           </h4>
         </div>
         <div className="col-4">
           <h6 className="fw-semibold text-uppercase text-secondary">Income</h6>
-          <h4 className="fw-bold">₹ {formatCurrency(curr?.totalIncome)}</h4>
+          <h4 className="fw-bold">₹ {displayCurrency(curr?.totalIncome)}</h4>
         </div>
       </div>
 
@@ -107,14 +145,14 @@ const Overview = ({
           <h4 className="fw-bold">
             {projectedExpense === null
               ? "—"
-              : `₹ ${formatCurrency(projectedExpense)}`}
+              : `₹ ${displayCurrency(projectedExpense)}`}
           </h4>
         </div>
         <div className="col-6">
           <h6 className="fw-semibold text-uppercase text-secondary">
-            Actual Expenses
+            Recorded Expenses
           </h6>
-          <h4 className="fw-bold">₹ {formatCurrency(curr?.totalExpenses)}</h4>
+          <h4 className="fw-bold">₹ {displayCurrency(curr?.totalExpenses)}</h4>
         </div>
       </div>
 
@@ -135,7 +173,7 @@ const Overview = ({
                   : "text-danger"
             }`}
           >
-            {oneMonthChange === null ? "—" : formatCurrency(oneMonthChange)}
+            {oneMonthChange === null ? "—" : displayCurrency(oneMonthChange)}
           </h4>
         </div>
         <div className="col-6">
@@ -158,7 +196,9 @@ const Overview = ({
             )}
             {netWorthPerChange === null
               ? " —"
-              : ` ${Math.abs(netWorthPerChange).toFixed(2)} %`}
+              : showDetails
+                ? ` ${Math.abs(netWorthPerChange).toFixed(2)} %`
+                : " ****"}
           </h4>
         </div>
       </div>
