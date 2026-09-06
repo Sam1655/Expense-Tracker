@@ -34,8 +34,8 @@ const Expenses = ({
       expensesFields.reduce(
         (accumulator, currentValue) =>
           accumulator + +currentValue.value?.split(",")?.join(""),
-        0
-      )
+        0,
+      ),
     );
   }, [expensesFields]);
 
@@ -43,89 +43,113 @@ const Expenses = ({
     setModal({ isOpen: true });
   };
 
-  return (
-    <div className="mx-3 responsive-expense-container">
-      <div className="row align-items-center justify-content-center mt-2">
-        {expensesFields?.map((row, index) => {
-          return (
-            <div
-              className="my-1 d-flex align-items-center justify-content-center"
-              key={index}
-            >
-              <span
-                type="button"
-                className="mx-2 "
-                onClick={() => {
-                  setModal({ isOpen: true, index: index });
-                }}
-              >
-                <FontAwesomeIcon icon={faPen} />
-              </span>
-              {expensesFields[index]?.label !== "Other" &&
-              EXPENSE_TYPES.includes(expensesFields[index]?.label) ? (
-                <select
-                  value={expensesFields[index]?.label}
-                  className="mx-2"
-                  onChange={(e) => {
-                    row.label = e.target.value;
-                    setExpensesFields([...expensesFields]);
+  const expensesByDate = expensesFields.reduce((groups, expense, index) => {
+    const dateKey = expense.timestamp
+      ? new Date(expense.timestamp).toLocaleDateString("en-CA")
+      : "undated";
 
-                    // Automatically focus the corresponding TextInput
-                    requestAnimationFrame(() => {
-                      const inputElement =
-                        e.target.value === "Other"
-                          ? inputRefs.current[index]
-                          : inputAmountRefs.current[index];
-                      if (inputElement) {
-                        inputElement.focus();
-                      }
-                    });
+    if (!groups[dateKey]) groups[dateKey] = [];
+    groups[dateKey].push({ expense, index });
+    return groups;
+  }, {});
+
+  const sortedExpensesByDate = Object.entries(expensesByDate).sort(
+    ([firstDate], [secondDate]) => {
+      if (firstDate === "undated") return 1;
+      if (secondDate === "undated") return -1;
+      return secondDate.localeCompare(firstDate);
+    },
+  );
+
+  const formatDateHeading = (dateKey) => {
+    if (dateKey === "undated") return "Date not set";
+
+    return new Date(`${dateKey}T00:00:00`).toLocaleDateString("en-GB", {
+      weekday: "short",
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  return (
+    <div className="responsive-expense-container">
+      <div className="expense-list m-3">
+        {sortedExpensesByDate.map(([dateKey, expenses]) => (
+          <section className="expense-date-group" key={dateKey}>
+            <div className="expense-date-header">
+              {formatDateHeading(dateKey)}
+            </div>
+            {expenses.map(({ expense: row, index }) => (
+              <div
+                className="my-1 px-4 d-flex align-items-center justify-content-center expense-row"
+                key={index}
+              >
+                {expensesFields[index]?.label !== "Other" &&
+                EXPENSE_TYPES.includes(expensesFields[index]?.label) ? (
+                  <select
+                    value={expensesFields[index]?.label}
+                    className="mx-2"
+                    onChange={(e) => {
+                      row.label = e.target.value;
+                      setExpensesFields([...expensesFields]);
+
+                      // Automatically focus the corresponding TextInput
+                      requestAnimationFrame(() => {
+                        const inputElement =
+                          e.target.value === "Other"
+                            ? inputRefs.current[index]
+                            : inputAmountRefs.current[index];
+                        if (inputElement) {
+                          inputElement.focus();
+                        }
+                      });
+                    }}
+                  >
+                    {EXPENSE_TYPES.map((name, index1) => (
+                      <option key={index1} value={name}>
+                        {name}
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    ref={(el) => (inputRefs.current[index] = el)}
+                    type="text"
+                    className="mx-2 expenseInput"
+                    onChange={(e) => {
+                      row.label = e.target.value;
+                      setExpensesFields([...expensesFields]);
+                    }}
+                    onClick={(e) => {
+                      if (e.target.value === "Other") e.target.value = "";
+                    }}
+                    value={expensesFields[index]?.label}
+                  ></input>
+                )}
+                <label className="mx-2">:</label>
+                <TextInput
+                  ref={(el) => (inputAmountRefs.current[index] = el)} // store ref
+                  onChange={(e) => handleInputChange(e, index)}
+                  onClick={(e) => {
+                    if (e.target.value === "0") e.target.value = "";
+                  }}
+                  placeholder={row.label}
+                  value={row.value}
+                />
+                <span
+                  type="button"
+                  className="mx-2"
+                  onClick={() => {
+                    setModal({ isOpen: true, index: index });
                   }}
                 >
-                  {EXPENSE_TYPES.map((name, index1) => (
-                    <option key={index1} value={name}>
-                      {name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  ref={(el) => (inputRefs.current[index] = el)}
-                  type="text"
-                  className="mx-2 expenseInput"
-                  onChange={(e) => {
-                    row.label = e.target.value;
-                    setExpensesFields([...expensesFields]);
-                  }}
-                  onClick={(e) => {
-                    if (e.target.value === "Other") e.target.value = "";
-                  }}
-                  value={expensesFields[index]?.label}
-                ></input>
-              )}
-              <label className="mx-2">:</label>
-              <TextInput
-                ref={(el) => (inputAmountRefs.current[index] = el)} // store ref
-                onChange={(e) => handleInputChange(e, index)}
-                onClick={(e) => {
-                  if (e.target.value === "0") e.target.value = "";
-                }}
-                placeholder={row.label}
-                value={row.value}
-              />
-              <span className="date-Span">
-                {expensesFields[index]?.timestamp
-                  ? new Date(
-                      expensesFields[index]?.timestamp
-                    ).toLocaleDateString("en-GB", {
-                      day: "2-digit",
-                      month: "2-digit",
-                    })
-                  : ""}
-              </span>
-            </div>
-          );
-        })}
+                  <FontAwesomeIcon icon={faPen} />
+                </span>
+              </div>
+            ))}
+          </section>
+        ))}
         <div className="mt-2 row align-items-start text-start justify-content-start bg-danger position-sticky bottom-0 rounded">
           <div className="my-2 d-flex align-items-center ">
             <p className="text-start mb-0" style={{ flex: "0 0 40%" }}>
@@ -135,7 +159,7 @@ const Expenses = ({
             <TextInput
               value={JSON.stringify(totalExpenses).replace(
                 /\B(?=(\d{3})+(?!\d))/g,
-                ","
+                ",",
               )}
               disabled
               placeholder="Total"

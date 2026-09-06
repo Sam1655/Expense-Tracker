@@ -14,6 +14,36 @@
     max-height: 52vh;
 }
 
+.expense-date-group {
+    width: 100%;
+    margin: 0 0 0.85rem;
+    overflow: hidden;
+    border: 1px solid #3d3d3d;
+    border-radius: 8px;
+    background-color: #292929;
+}
+
+.expense-date-header {
+    padding: 0.3rem 0.75rem;
+    border-bottom: 1px solid #454545;
+    background-color: #343434;
+    color: #d7e8dc;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.expense-row {
+    width: 100%;
+    padding: 0.3rem 0.35rem;
+    box-sizing: border-box;
+}
+
+.expense-row + .expense-row {
+    border-top: 1px solid #383838;
+}
+
 @media (min-width: 992px) {
     .responsive-container {
         min-height: 80vh;
@@ -72,7 +102,7 @@ input[type="month"] {
     outline: none;
     transition: border-color 0.3s ease, background-color 0.3s ease;
 }
-
+expense-row
 input[type="month"]:focus {
     border-color: #2f1f8a;
     background-color: #444;
@@ -80,7 +110,7 @@ input[type="month"]:focus {
 
 select {
     min-width: 10rem;
-    width: 10rem;
+    /* width: 12rem; */
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
     border: 2px solid #444;
@@ -137,6 +167,26 @@ select option:hover {
     border-radius: 8px;
     background-color: #333;
     color: #fff;
+}
+
+@media (max-width: 600px) {
+    .expense-row {
+        flex-wrap: wrap;
+        justify-content: flex-start !important;
+        gap: 0.3rem;
+    }
+
+    .expense-row select,
+    .expense-row .expenseInput {
+        /* flex: 1 1 9rem; */
+        min-width: 8.5rem;
+        width: 8.5rem;
+    }
+
+    .expense-row .rupee-input-container {
+        flex: 1 1 6rem;
+        min-width: 0;
+    }
 }
 
 

@@ -56,6 +56,7 @@ export const EXPENSE_TYPES = [
   "Petrol",
   "Rapido",
   "Salon",
+  "Shopping",
   "Swiggy",
   "Skin Care",
   "Toll",
