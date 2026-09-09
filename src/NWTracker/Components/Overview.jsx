@@ -70,7 +70,7 @@ const Overview = ({
       : null;
 
   const displayCurrency = (value, showFullValue = false) =>
-    showDetails ? formatCurrency(value, showFullValue) : "****";
+    showDetails || !value ? formatCurrency(value, showFullValue) : "****";
 
   useEffect(() => {
     setxAxisField([
@@ -89,15 +89,8 @@ const Overview = ({
         backgroundColor: "#1e1e1e",
       }}
     >
-      <div className="mb-3 d-flex align-items-center justify-content-center">
+      <div className="mb-3 d-flex align-items-center justify-content-center gap-4">
         <p className="m-0 fs-5 fw-medium">My Networth</p>
-      </div>
-
-      {/* Main Net Worth */}
-      <div className="d-flex align-items-center justify-content-center gap-2">
-        <h1 className="display-5 fw-bold mb-1">
-          ₹{displayCurrency(netWorth, true)}
-        </h1>
         <button
           type="button"
           className="btn btn-sm btn-dark"
@@ -111,6 +104,13 @@ const Overview = ({
         >
           <FontAwesomeIcon icon={showDetails ? faEyeSlash : faEye} />
         </button>
+      </div>
+
+      {/* Main Net Worth */}
+      <div className="d-flex align-items-center justify-content-center gap-2">
+        <h1 className="display-5 fw-bold mb-1">
+          ₹{displayCurrency(netWorth, true)}
+        </h1>
       </div>
       <p className="text-secondary">Assets − Liabilities</p>
 
@@ -152,7 +152,9 @@ const Overview = ({
           <h6 className="fw-semibold text-uppercase text-secondary">
             Recorded Expenses
           </h6>
-          <h4 className="fw-bold">₹ {displayCurrency(curr?.totalExpenses, true)}</h4>
+          <h4 className="fw-bold">
+            ₹ {displayCurrency(curr?.totalExpenses, true)}
+          </h4>
         </div>
       </div>
 

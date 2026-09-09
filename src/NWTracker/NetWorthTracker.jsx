@@ -11,6 +11,7 @@ import {
   faCopy,
   faAngleLeft,
   faAngleRight,
+  faArrowRightToBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { TABS } from "./constants";
 import { ToastContainer, toast } from "react-toastify";
@@ -381,6 +382,70 @@ const NetWorthTracker = () => {
     const prevMonth = new Date(year, month + 1, 1).toISOString().slice(0, 7);
     setValue("date", prevMonth);
   });
+
+  const handleCopy = async () => {
+    const confirmed = window.confirm(
+      "Do you want to copy the Data to the Clipboard?",
+    );
+
+    if (!confirmed) return;
+
+    try {
+      await navigator.clipboard.writeText(JSON.stringify(consolidatedData));
+
+      toast.success("Data successfully copied to Clipboard");
+    } catch (error) {
+      toast.error("Error copying data due to Client-Side Restrictions");
+    }
+  };
+
+  const handleImport = async () => {
+    const confirmed = window.confirm(
+      "Do you want to import Data from Clipboard to this Application?",
+    );
+
+    if (!confirmed) return;
+
+    let clipboardText;
+
+    try {
+      clipboardText = await navigator.clipboard.readText();
+    } catch (error) {
+      toast.error("Error reading data due to Client-Side Restrictions");
+      return;
+    }
+
+    let data;
+
+    try {
+      data = JSON.parse(clipboardText);
+    } catch (error) {
+      toast.error("Unable to Replace. Unexpected format of Data in Clipboard");
+      return;
+    }
+
+    // Must be a non-null object and must not be an array
+    if (typeof data !== "object" || data === null || Array.isArray(data)) {
+      toast.error("Unable to Replace. Unexpected format of Data in Clipboard");
+      return;
+    }
+
+    const confirmed2 = window.confirm(
+      "This action will permanently delete your existing Data and replace it with the copied data. Are you sure you want to proceed?",
+    );
+
+    if (!confirmed2) return;
+
+    try {
+      localStorage.setItem("consolidatedData", clipboardText);
+
+      window.alert("Data overwrite successful");
+      window.location.reload();
+    } catch (error) {
+      toast.error("Unable to save the imported Data");
+    }
+  };
+
   return (
     <div className="main-container">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -404,14 +469,7 @@ const NetWorthTracker = () => {
                 >
                   <FontAwesomeIcon icon={faAngleLeft} />
                 </button>
-                <input
-                  type="month"
-                  {...register("date")}
-                  // control={control}
-                  // onChange={(e) => {
-                  //   handleDateChange(e.target.value);
-                  // }}
-                ></input>
+                <input type="month" {...register("date")}></input>
                 <button
                   onClick={handleNextMonth}
                   type="button"
@@ -420,15 +478,19 @@ const NetWorthTracker = () => {
                   <FontAwesomeIcon icon={faAngleRight} />
                 </button>
               </div>
-
               <button
                 type="button"
+                title="Import Data from Clipboard"
                 className="btn btn-light rounded-circle"
-                onClick={() =>
-                  navigator.clipboard.writeText(
-                    JSON.stringify(consolidatedData),
-                  )
-                }
+                onClick={handleImport}
+              >
+                <FontAwesomeIcon icon={faArrowRightToBracket} />
+              </button>
+              <button
+                type="button"
+                title="Copy Data to Clipboard"
+                className="btn btn-light rounded-circle"
+                onClick={handleCopy}
               >
                 <FontAwesomeIcon icon={faCopy} />
               </button>
