@@ -34,8 +34,9 @@ const Overview = ({
   getValues,
   netWorth,
   setxAxisField,
+  showDetails,
+  setShowDetails,
 }) => {
-  const [showDetails, setShowDetails] = useState(false);
   const selectedMonth = selectedDate;
   const [year, month] = selectedMonth.split("-").map(Number);
   const prevMonth = new Date(year, month - 1, 1).toISOString().slice(0, 7);

@@ -3,6 +3,19 @@ import TextInput from "./TextInput";
 import { EXPENSE_TYPES } from "../constants";
 import "./AddExpenseModal.css";
 
+const toDateInputValue = (value) => {
+  if (!value) {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  const parsedDate = new Date(value);
+  if (Number.isNaN(parsedDate.getTime())) {
+    return new Date().toISOString().split("T")[0];
+  }
+
+  return parsedDate.toISOString().split("T")[0];
+};
+
 const AddExpenseModal = ({
   setModal,
   expensesFields,
@@ -14,10 +27,14 @@ const AddExpenseModal = ({
 
   const [row, setRow] = useState(
     isEdit
-      ? { ...expensesFields[index] }
-      : { label: EXPENSE_TYPES[0], value: "", desc: "", timestamp: new Date() }
+      ? { ...expensesFields[index], timestamp: toDateInputValue(expensesFields[index]?.timestamp) }
+      : {
+          label: EXPENSE_TYPES[0],
+          value: "",
+          desc: "",
+          timestamp: toDateInputValue(new Date()),
+        },
   );
-  console.log(row, "row");
   const amountRef = useRef(null);
   const otherLabelRef = useRef(null);
 
@@ -28,6 +45,17 @@ const AddExpenseModal = ({
     setRow((prev) => ({
       ...prev,
       value: formatAmount(e.target.value),
+    }));
+  };
+
+  const handleDateChange = (e) => {
+    const selectedDate = e.target.value;
+    if (!selectedDate) return;
+
+    const normalizedDate = new Date(`${selectedDate}T12:00:00`);
+    setRow((prev) => ({
+      ...prev,
+      timestamp: normalizedDate.toISOString(),
     }));
   };
 
@@ -95,6 +123,16 @@ const AddExpenseModal = ({
               }
             />
           )}
+        </div>
+
+        {/* DATE */}
+        <div className="form-group">
+          <label>Date</label>
+          <input
+            type="date"
+            value={toDateInputValue(row.timestamp)}
+            onChange={handleDateChange}
+          />
         </div>
 
         {/* AMOUNT */}

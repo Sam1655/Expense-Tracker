@@ -54,6 +54,8 @@ const NetWorthTracker = () => {
   const [xAxisField, setxAxisField] = useState([]);
   const [expensesFields, setExpensesFields] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [showDetails, setShowDetails] = useState(false);
+
   // const [netWorth, setNetWorth] = useState(totalAssets - totalLiabilities);
   const [consolidatedData, setConsolidatedData] = useState(
     JSON.parse(localStorage.getItem("consolidatedData")) || MOCK_DATA,
@@ -229,6 +231,8 @@ const NetWorthTracker = () => {
             getValues={getValues}
             netWorth={netWorth}
             setxAxisField={setxAxisField}
+            showDetails={showDetails}
+            setShowDetails={setShowDetails}
           />
         );
       case 1:
@@ -275,6 +279,8 @@ const NetWorthTracker = () => {
             setExpensesFields={setExpensesFields}
             toast={toast}
             setModal={setModal}
+            selectedDate={selectedDate}
+            consolidatedData={consolidatedData}
           />
         );
     }
