@@ -27,7 +27,10 @@ const AddExpenseModal = ({
 
   const [row, setRow] = useState(
     isEdit
-      ? { ...expensesFields[index], timestamp: toDateInputValue(expensesFields[index]?.timestamp) }
+      ? {
+          ...expensesFields[index],
+          timestamp: toDateInputValue(expensesFields[index]?.timestamp),
+        }
       : {
           label: EXPENSE_TYPES[0],
           value: "",
@@ -101,7 +104,7 @@ const AddExpenseModal = ({
                 requestAnimationFrame(() =>
                   e.target.value === "Other"
                     ? otherLabelRef.current?.focus()
-                    : amountRef.current?.focus()
+                    : amountRef.current?.focus(),
                 );
               }}
             >
